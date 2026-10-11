@@ -1,0 +1,174 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import CtaPanel from "../components/CtaPanel.astro";
+
+const cases = [
+  {
+    tag: "原生 · x86 32-bit",
+    title: "DX-Ball：重建声像计算",
+    question: "游戏怎么根据物体位置计算左右声道的声像？",
+    steps: [
+      "沿声音调用追踪到根据位置计算声像的辅助函数",
+      "检查指令流，确认查表与插值的具体做法",
+      "把不完整的伪代码重写成可读的 C 实现",
+    ],
+    results: [
+      { k: "测试用例", v: "3,205 个原始 x86 用例全部通过" },
+      { k: "字节复现", v: "编译后函数 63 字节完全一致" },
+    ],
+    href: "https://rea.tools/showcase/dx-ball/",
+    repo: "https://github.com/N0zoM1z0/dx-ball",
+    image: "/assets/case-dxball.webp",
+    alt: "DX-Ball 游戏窗口两侧的扬声器图标，中间是一颗弹球",
+  },
+  {
+    tag: "JavaScript · Electron",
+    title: "Notion：追踪 Electron 剪贴板桥",
+    question: "渲染进程里的剪贴板调用，最终怎么落到系统剪贴板？",
+    steps: [
+      "找到渲染进程暴露的剪贴板 API",
+      "沿 preload 脚本与 IPC 通道追踪到主进程",
+      "检查富格式剪贴板数据的实际结构与序列化方式",
+    ],
+    results: [
+      { k: "追踪路径", v: "renderer → preload → IPC → main" },
+      { k: "数据形态", v: "富格式（含 HTML 片段）" },
+    ],
+    href: "https://rea.tools/showcase/notion/",
+    image: "/assets/case-notion.webp",
+    alt: "渲染进程窗口与主进程剪贴板之间的 IPC 桥接示意",
+  },
+  {
+    tag: "旧版二进制 · PC-98 16-bit",
+    title: "TH04：恢复 DOS 环形子弹的计算",
+    question: "弹幕环的固定角度和瞄准角度是怎么算出来的？",
+    steps: [
+      "检查原始 PC-98 游戏的 16 位指令",
+      "恢复固定角度与瞄准角度的两套计算路径",
+      "把重建的 C++ 与当年编译器输出逐字节对比",
+    ],
+    results: [
+      { k: "指令宽度", v: "16-bit" },
+      { k: "产物", v: "可对比的 C++ 重建" },
+    ],
+    href: "https://rea.tools/showcase/th04/",
+    repo: "https://github.com/N0zoM1z0/th04",
+    image: "/assets/case-th04.webp",
+    alt: "弹幕游戏中围绕中心发射点旋转排列的一圈子弹",
+  },
+];
+---
+
+<Layout
+  title="实战案例 · REA"
+  description="REA 的逆向工程实战案例：DX-Ball 声像计算、Notion Electron 剪贴板桥、TH04 DOS 环形子弹计算。"
+>
+  <PageHeader
+    eyebrow="实战案例"
+    title="把「看不懂」变成通过的测试"
+    lead="每个案例都记录目标、提出的问题、REA 提供的信息，以及最终可以被验证的结果。这些不是演示截图，而是可复现的分析过程。"
+    meta={["案例数量|3 个", "产出形态|C / C++ 重建", "验证方式|逐字节对比"]}
+  />
+
+  <section class="border-b border-line bg-paper">
+    <div class="shell py-16 sm:py-20">
+      <div class="space-y-16 sm:space-y-20">
+        {
+          cases.map((c, i) => (
+            <article data-reveal style={`--reveal-delay:${i * 80}ms`} class="border-t-2 border-ink pt-9">
+              <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-20">
+                <div>
+                  <span class="label text-rust-2">{c.tag}</span>
+                  <h2 class="display mt-5 text-[clamp(1.7rem,3.2vw,2.4rem)] text-ink">{c.title}</h2>
+
+                  <div class="mt-7 border-l-2 border-rust pl-5">
+                    <p class="label">提出的问题</p>
+                    <p class="mt-2 text-[16px] leading-[1.75] text-ink-2">{c.question}</p>
+                  </div>
+
+                  <ol class="mt-9">
+                    {c.steps.map((s) => (
+                      <li class="relative flex gap-4 border-t border-line py-4 first:border-t-0 first:pt-0">
+                        <span class="mt-2 h-1.5 w-1.5 shrink-0 bg-rust" aria-hidden="true" />
+                        <span class="text-[15px] leading-[1.75] text-ink-2">{s}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div class="lg:pt-14">
+                  <div class="border border-line bg-paper-2">
+                    <div class="border-b border-line p-5">
+                      <img
+                        src={c.image}
+                        width="263"
+                        height="263"
+                        alt={c.alt}
+                        loading="lazy"
+                        decoding="async"
+                        class="w-full max-w-[260px] border border-line"
+                      />
+                    </div>
+                    <dl class="border-b border-line">
+                      {c.results.map((r) => (
+                        <div class="border-t border-line px-5 py-5 first:border-t-0">
+                          <dt class="label">{r.k}</dt>
+                          <dd class="mt-2 text-[16px] leading-snug text-ink">{r.v}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <div class="flex flex-wrap gap-x-6 gap-y-2 px-5 py-4">
+                      <a
+                        href={c.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="link-underline -mx-2 inline-block px-2 py-1.5 font-mono text-[12px] tracking-[0.08em] text-ink"
+                      >
+                        阅读完整案例 ↗
+                      </a>
+                      {c.repo && (
+                        <a
+                          href={c.repo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="link-underline -mx-2 inline-block px-2 py-1.5 font-mono text-[12px] tracking-[0.08em] text-muted"
+                        >
+                          重建项目仓库 ↗
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div data-reveal class="mt-20 border-t border-line pt-10">
+        <h2 class="display text-[clamp(1.5rem,2.6vw,2rem)] text-ink">分享你的案例</h2>
+        <p class="mt-4 max-w-[62ch] text-[15.5px] leading-[1.8] text-ink-2">
+          用 REA 分析过有趣的目标，我们很想了解。欢迎通过 issue 或 pull request
+          分享：说明目标、你的问题、REA 如何提供帮助，以及你的发现。
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a
+            href="https://github.com/morluto/rea/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-solid">提交 issue</a
+          >
+          <a
+            href="https://github.com/morluto/rea/pulls"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-ghost">提交 pull request</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaPanel />
+</Layout>

@@ -1,0 +1,81 @@
+---
+const flow = [
+  {
+    step: "智能体",
+    note: "Claude Code / Codex / Cursor / Gemini CLI / Grok Build",
+    detail: "提出你想弄清的问题，指定目标。",
+  },
+  {
+    step: "REA MCP 服务",
+    note: "统一的结果契约与工具目录",
+    detail: "把问题翻译成对本机分析工具的调用。",
+  },
+  {
+    step: "分析引擎",
+    note: "Hopper / Ghidra / IDA / Chrome / JADX / adb / pwntools",
+    detail: "检查目标并追踪相关代码，留下证据。",
+  },
+];
+---
+
+<section class="border-b border-line bg-paper">
+  <div class="shell py-20 sm:py-28">
+    <div class="grid gap-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-20">
+      <div>
+        <h2 data-reveal class="display max-w-[14em] text-[clamp(1.95rem,3.8vw,2.9rem)] text-ink">
+          一个服务，连上所有分析工具
+        </h2>
+        <p data-reveal style="--reveal-delay:70ms" class="mt-6 max-w-[46ch] text-[16px] leading-[1.85] text-ink-2">
+          在应用里看到一个想加入自己产品的功能，就让智能体用 REA
+          调查它。没有源代码，它也能检查应用、解释功能的工作方式、展示证据。
+        </p>
+        <p data-reveal style="--reveal-delay:130ms" class="mt-4 max-w-[46ch] text-[16px] leading-[1.85] text-muted">
+          静态检查只读取你提供的文件。运行时捕获会以你的用户权限运行目标，各运行时指南逐项说明影响范围。
+        </p>
+
+        <dl data-reveal style="--reveal-delay:190ms" class="mt-10 grid gap-px border border-line bg-line sm:grid-cols-2">
+          <div class="bg-paper p-5">
+            <dt class="label">本机提供方</dt>
+            <dd class="mt-2.5 text-[14.5px] leading-[1.75] text-ink-2">
+              原生分析可以用你已有的 Hopper 或 Ghidra，设置流程也可以在你批准后安装 Hopper。
+            </dd>
+          </div>
+          <div class="bg-paper p-5">
+            <dt class="label">回传结果</dt>
+            <dd class="mt-2.5 text-[14.5px] leading-[1.75] text-ink-2">
+              伪代码、汇编、引用位置和明确的未知项，每条结论都附带支撑证据。
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Investigation flow. Wipe reveal: the clip lives on the child,
+           never on the observed element, so IntersectionObserver can fire. -->
+      <div data-reveal="wipe" style="--reveal-delay:120ms">
+        <ol class="border border-line bg-paper-2">
+          {
+            flow.map((node, i) => (
+              <li class="relative border-b border-line py-7 pl-14 pr-6 last:border-b-0 sm:py-8 sm:pl-16 sm:pr-8">
+                <span
+                  class="absolute left-0 top-0 flex h-full w-11 items-center justify-center border-r border-line sm:w-12"
+                  aria-hidden="true"
+                >
+                  {i < flow.length - 1 && (
+                    <span class="absolute left-1/2 top-[calc(50%+6px)] h-[calc(100%-12px)] w-px -translate-x-1/2 bg-line" />
+                  )}
+                  <span class="h-1.5 w-1.5 bg-rust" />
+                </span>
+                <h3 class="text-[20px] text-ink sm:text-[22px]">{node.step}</h3>
+                <p class="mt-3 text-[14.5px] leading-[1.75] text-ink-2">{node.detail}</p>
+                <p class="mt-2 font-mono text-[11.5px] leading-relaxed text-muted">{node.note}</p>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="caption mt-4 max-w-[48ch]">
+          CLI 命令走同一条路径，结果契约一致，方便脚本化与回归对比。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,140 @@
+---
+const cases = [
+  {
+    title: "DX-Ball：重建声像计算",
+    lead: "沿声音调用追踪到根据位置计算声像的辅助函数，检查指令，把不完整的伪代码转成 C。",
+    metrics: [
+      { k: "测试用例", v: "3,205 全部通过" },
+      { k: "字节复现", v: "63 / 63" },
+    ],
+    href: "https://rea.tools/showcase/dx-ball/",
+    image: "/assets/case-dxball.webp",
+    alt: "DX-Ball 游戏窗口两侧的扬声器图标，中间是一颗弹球",
+    tag: "原生二进制",
+  },
+  {
+    title: "Notion：追踪 Electron 剪贴板桥",
+    lead: "找到渲染进程的剪贴板 API，沿 preload 和 IPC 追踪到主进程，并检查富格式剪贴板数据。",
+    metrics: [{ k: "边界", v: "renderer → preload → main" }],
+    href: "https://rea.tools/showcase/notion/",
+    image: "/assets/case-notion.webp",
+    alt: "渲染进程窗口与主进程剪贴板之间的 IPC 桥接示意",
+    tag: "JavaScript",
+  },
+  {
+    title: "TH04：恢复 DOS 环形子弹的计算",
+    lead: "检查原始 PC-98 游戏的 16 位指令，恢复固定角度和瞄准角度的计算，并与当年编译器输出对比。",
+    metrics: [{ k: "指令宽度", v: "16-bit" }],
+    href: "https://rea.tools/showcase/th04/",
+    image: "/assets/case-th04.webp",
+    alt: "弹幕游戏中围绕中心发射点旋转排列的一圈子弹",
+    tag: "旧版二进制",
+  },
+];
+---
+
+<section id="cases" class="border-b border-line bg-paper">
+  <div class="shell py-20 sm:py-28">
+    <p data-reveal class="label">实战案例</p>
+    <h2 data-reveal style="--reveal-delay:60ms" class="display mt-5 max-w-[24ch] text-[clamp(1.95rem,3.8vw,2.9rem)] text-ink">
+      从调用链到通过的测试
+    </h2>
+    <p data-reveal style="--reveal-delay:120ms" class="mt-5 max-w-[50ch] text-[16px] leading-[1.8] text-ink-2">
+      每个案例都给出目标、提出的问题、REA 提供的信息，以及最终可验证的结果。
+    </p>
+    <a
+      data-reveal
+      style="--reveal-delay:170ms"
+      href="https://rea.tools/showcase/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="link-underline mt-6 inline-block py-1.5 font-mono text-[12.5px] tracking-[0.1em] text-ink"
+      >全部案例 ↗</a
+    >
+
+    <!-- Asymmetric image grid: a wide feature row, then a two-up. -->
+    <div class="mt-14 grid gap-6 lg:grid-cols-2">
+      <a
+        data-reveal
+        href={cases[0].href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="case-figure group plate flex flex-col border border-line bg-paper hover:border-line-2 lg:col-span-2 lg:flex-row"
+      >
+        <div class="flex-1 px-6 py-7 sm:px-8 sm:py-9">
+          <span class="label text-rust-2">{cases[0].tag}</span>
+          <h3
+            class="display mt-5 text-[clamp(1.5rem,2.4vw,2.1rem)] text-ink transition-colors duration-500 group-hover:text-rust-2"
+          >
+            {cases[0].title}
+          </h3>
+          <p class="mt-4 max-w-[48ch] text-[15px] leading-[1.85] text-ink-2">{cases[0].lead}</p>
+          <dl class="mt-7 flex flex-wrap gap-x-10 gap-y-4">
+            {
+              cases[0].metrics.map((m) => (
+                <div>
+                  <dt class="label">{m.k}</dt>
+                  <dd class="tnum mt-2 text-[15px] text-ink">{m.v}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+        <div class="flex items-center justify-center border-t border-line bg-paper-2 p-6 lg:w-[42%] lg:border-l lg:border-t-0 lg:p-8">
+          <img
+            src={cases[0].image}
+            width="263"
+            height="263"
+            alt={cases[0].alt}
+            loading="lazy"
+            decoding="async"
+            class="w-full max-w-[300px] border border-line"
+          />
+        </div>      </a>
+
+      {
+        cases.slice(1).map((c) => (
+          <a
+            data-reveal
+            href={c.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="case-figure group plate flex flex-col border border-line bg-paper hover:border-line-2"
+          >
+            <div class="flex items-center justify-center border-b border-line bg-paper-2 p-5">
+              <img
+                src={c.image}
+                width="263"
+                height="263"
+                alt={c.alt}
+                loading="lazy"
+                decoding="async"
+                class="w-full max-w-[220px] border border-line"
+              />
+            </div>
+            <div class="flex flex-1 flex-col px-6 py-7 sm:px-7">
+              <span class="label text-rust-2">{c.tag}</span>
+              <h3 class="mt-4 text-[20px] text-ink transition-colors duration-500 group-hover:text-rust-2">
+                {c.title}
+              </h3>
+              <p class="mt-3 max-w-[44ch] text-[14.5px] leading-[1.8] text-ink-2">{c.lead}</p>
+              <dl class="mt-auto flex flex-wrap gap-x-10 gap-y-4 pt-7">
+                {c.metrics.map((m) => (
+                  <div>
+                    <dt class="label">{m.k}</dt>
+                    <dd class="tnum mt-2 text-[14px] text-ink">{m.v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <p data-reveal class="caption mt-8 max-w-[72ch]">
+      用 REA 分析过有趣的目标，欢迎通过 issue 或 pull request 分享：说明目标、你的问题、REA
+      如何提供帮助，以及你的发现。
+    </p>
+  </div>
+</section>

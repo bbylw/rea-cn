@@ -1,0 +1,49 @@
+---
+const steps = [
+  {
+    title: "智能体发起调查",
+    body: "智能体通过 MCP 调用 REA，指定目标与想弄清的行为。CLI 走同一套工作流，结果契约一致。",
+    meta: "MCP 调用",
+  },
+  {
+    title: "本机分析并留下证据",
+    body: "REA 检查目标、追踪相关代码，返回发现及其证据：伪代码、汇编、引用位置，以及明确的未知项。",
+    meta: "本机运行",
+  },
+  {
+    title: "解释、实现、测试",
+    body: "智能体据此提出后续问题、解释行为，或直接编写并测试实现。案例中已有可复现的完整示例。",
+    meta: "产出代码",
+  },
+];
+---
+
+<section id="how" class="border-b border-line bg-paper">
+  <div class="shell py-20 sm:py-28">
+    <div class="max-w-[44rem]">
+      <h2 data-reveal class="display text-[clamp(1.95rem,3.8vw,2.9rem)] text-ink">
+        三步闭环，中间不做猜测
+      </h2>
+      <p data-reveal style="--reveal-delay:70ms" class="mt-6 max-w-[52ch] text-[16px] leading-[1.8] text-ink-2">
+        问对问题，拿到证据，产出可验证的实现。结果里同时包含证据和相关限制，缺少什么、无法确认什么，都会一并说明。
+      </p>
+    </div>
+
+    <ol class="mt-14 grid gap-px border-t border-line bg-line md:grid-cols-3">
+      {
+        steps.map((s, i) => (
+          <li
+            data-reveal
+            style={`--reveal-delay:${i * 90}ms`}
+            class="group flex h-full flex-col bg-paper pt-7 md:pr-8"
+          >
+            <span class="label transition-colors duration-300 group-hover:text-rust-2">{s.meta}</span>
+            <h3 class="mt-4 text-[22px] leading-snug text-ink sm:text-[25px]">{s.title}</h3>
+            <p class="mt-4 mb-8 max-w-[40ch] text-[15px] leading-[1.8] text-ink-2">{s.body}</p>
+            <span class="mt-auto block h-px w-10 bg-rust" aria-hidden="true"></span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

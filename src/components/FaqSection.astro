@@ -1,0 +1,27 @@
+---
+import Faq from "./react/Faq.tsx";
+---
+
+<section id="faq" class="border-b border-line bg-paper-2">
+  <div class="shell py-20 sm:py-28">
+    <div class="max-w-[38rem]">
+      <h2 data-reveal class="display text-[clamp(1.95rem,3.8vw,2.9rem)] text-ink">还在犹豫的地方</h2>
+      <p data-reveal style="--reveal-delay:70ms" class="mt-5 max-w-[40ch] text-[15.5px] leading-[1.8] text-ink-2">
+        关于引擎依赖、skill 安装、数据流向和排障的常见疑问。
+      </p>
+      <a
+        data-reveal
+        style="--reveal-delay:130ms"
+        href="https://github.com/morluto/rea/blob/main/docs/installation.md"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="link-underline mt-6 inline-block py-1.5 font-mono text-[12.5px] tracking-[0.1em] text-ink"
+        >完整安装与设置文档 ↗</a
+      >
+    </div>
+
+    <div data-reveal style="--reveal-delay:100ms" class="mt-14 max-w-[1080px] border-t border-line">
+      <Faq client:visible />
+    </div>
+  </div>
+</section>

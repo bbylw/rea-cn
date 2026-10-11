@@ -1,16 +1,29 @@
 ---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import ProofBand from "../components/ProofBand.astro";
+import Ticker from "../components/Ticker.astro";
+import Concept from "../components/Concept.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import Targets from "../components/Targets.astro";
+import Start from "../components/Start.astro";
+import Cases from "../components/Cases.astro";
+import FaqSection from "../components/FaqSection.astro";
+import CtaPanel from "../components/CtaPanel.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout
+  title="REA · 逆向一切：通过 MCP 逆向分析二进制、应用与运行时行为"
+  description="让智能体用 REA 调查本机上的原生二进制、Electron 应用、.NET 程序集与网站。没有源码也能拿到伪代码、调用链与可复核的证据。"
+>
+  <Hero />
+  <ProofBand />
+  <Ticker />
+  <Concept />
+  <HowItWorks />
+  <Targets />
+  <Start />
+  <Cases />
+  <FaqSection />
+  <CtaPanel />
+</Layout>

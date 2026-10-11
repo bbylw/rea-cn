@@ -1,0 +1,26 @@
+---
+const figures = [
+  { k: "GitHub Stars", v: "50,000+" },
+  { k: "可分析目标", v: "15 类" },
+  { k: "重建测试用例", v: "3,205" },
+];
+---
+
+<section class="border-b border-line bg-paper-2" aria-label="项目规模">
+  <dl class="shell grid grid-cols-1 sm:grid-cols-3">
+    {
+      figures.map((f, i) => (
+        <div
+          class={`flex items-baseline justify-between gap-4 py-5 sm:block sm:py-6 ${
+            i > 0 ? "border-t border-line sm:border-l sm:border-t-0 sm:pl-8" : ""
+          }`}
+        >
+          <dt class="label order-2 sm:order-1">{f.k}</dt>
+          <dd class="tnum order-1 font-mono text-[26px] font-bold leading-none text-ink sm:order-2 sm:mt-3">
+            {f.v}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</section>

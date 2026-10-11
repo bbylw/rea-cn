@@ -1,0 +1,44 @@
+---
+import TargetTabs from "./react/TargetTabs.tsx";
+
+const notes = [
+  {
+    label: "证据优先",
+    body: "每条结论都附带支撑引用，无法确认的部分作为未知项列出，不被悄悄补齐。",
+  },
+  {
+    label: "本机执行",
+    body: "静态检查只读取你提供的文件，运行时捕获的影响范围在指南中逐项说明。",
+  },
+  {
+    label: "环境要求",
+    body: "Node.js 22.x（≥22.19）、24.x（≥24.11）或 26+，以及 npm。",
+  },
+];
+---
+
+<section id="targets" class="border-b border-line bg-paper-2">
+  <div class="shell py-20 sm:py-28">
+    <div class="max-w-[52rem]">
+      <h2 data-reveal class="display text-[clamp(1.95rem,3.8vw,2.9rem)] text-ink">可以分析什么</h2>
+      <p data-reveal style="--reveal-delay:70ms" class="mt-6 max-w-[52ch] text-[16px] leading-[1.8] text-ink-2">
+        从原生二进制、EVM 字节码到固件、APK 与进程行为，覆盖静态与运行时两条路径。切换分类可以查看每种目标的要求与返回内容。
+      </p>
+    </div>
+
+    <div data-reveal style="--reveal-delay:120ms" class="mt-14">
+      <TargetTabs client:visible />
+    </div>
+
+    <dl class="mt-16 grid gap-px border-t border-line bg-line sm:grid-cols-3">
+      {
+        notes.map((n) => (
+          <div class="bg-paper-2 py-7 pr-8">
+            <dt class="label">{n.label}</dt>
+            <dd class="mt-3 max-w-[38ch] text-[14.5px] leading-[1.8] text-ink-2">{n.body}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

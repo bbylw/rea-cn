@@ -1,0 +1,96 @@
+---
+const nav = [
+  { href: "/#how", label: "工作原理" },
+  { href: "/#targets", label: "分析目标" },
+  { href: "/cases", label: "案例" },
+  { href: "/guides", label: "指南" },
+  { href: "/#faq", label: "常见问题" },
+];
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-line bg-paper/95 backdrop-blur-xl supports-[backdrop-filter]:bg-paper/92"
+>
+  <div class="shell flex h-[68px] items-center justify-between gap-6">
+    <a href="/" class="group flex shrink-0 items-center gap-2.5">
+      <span
+        class="flex h-8 w-8 items-center justify-center bg-ink font-mono text-[13px] font-bold text-paper transition-colors duration-300 group-hover:bg-rust"
+        aria-hidden="true">R</span
+      >
+      <span class="flex items-baseline gap-2">
+        <span class="font-mono text-[15px] font-bold tracking-[0.16em] text-ink">REA</span>
+        <span class="hidden text-[13px] text-muted sm:inline">逆向一切</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-7 md:flex" aria-label="主导航">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class="link-underline py-1 text-[13.5px] text-ink-2 hover:text-ink"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex shrink-0 items-center gap-3">
+      <a
+        href="https://github.com/morluto/rea"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden py-2 font-mono text-[12px] tracking-[0.1em] text-muted transition-colors duration-300 hover:text-ink lg:inline"
+        >GITHUB ↗</a
+      >
+      <a href="/#start" class="btn btn-solid hidden px-4 py-2.5 sm:inline-flex">开始安装</a>
+
+      <details class="mobile-menu relative md:hidden" data-menu>
+        <summary
+          class="flex h-9 w-9 cursor-pointer list-none items-center justify-center border border-line-2 [&::-webkit-details-marker]:hidden"
+          aria-label="打开菜单"
+        >
+          <span class="flex flex-col gap-[5px]">
+            <span class="block h-px w-4 bg-ink"></span>
+            <span class="block h-px w-4 bg-ink"></span>
+            <span class="block h-px w-4 bg-ink"></span>
+          </span>
+        </summary>
+        <nav
+          class="absolute right-0 top-12 w-[220px] border border-line bg-paper p-2 shadow-[0_18px_40px_-28px_rgba(25,24,19,0.45)]"
+          aria-label="移动导航"
+        >
+          {
+            nav.map((item) => (
+              <a
+                href={item.href}
+                class="block px-3 py-2.5 text-sm text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
+              >
+                {item.label}
+              </a>
+            ))
+          }
+          <a
+            href="/#start"
+            class="mt-1 block bg-ink px-3 py-2.5 text-center font-mono text-[12px] tracking-wider text-paper"
+            >开始安装</a
+          >
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  // A <details> menu has to be dismissed explicitly once an item is picked.
+  document.addEventListener("click", (event) => {
+    const menu = event.target.closest("[data-menu]");
+    if (!menu) return;
+    if (menu.open && event.target.closest("a")) menu.open = false;
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    document.querySelectorAll("[data-menu][open]").forEach((m) => (m.open = false));
+  });
+</script>

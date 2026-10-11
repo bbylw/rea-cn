@@ -1,0 +1,111 @@
+---
+import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "REA · 逆向一切",
+  description = "通过一个 MCP 服务，逆向分析二进制文件、应用程序和运行时行为。没有源码，也能拿到伪代码、调用链与可复核的证据。",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f4f1ea" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    />
+
+    <!-- Reveal is progressive enhancement: the hidden state lives behind
+         this class, so a blocked or failed script leaves the page readable. -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:border focus:border-ink focus:bg-paper focus:px-4 focus:py-2 focus:text-sm focus:text-ink"
+      >跳到主要内容</a
+    >
+    <SiteHeader />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <SiteFooter />
+
+    <script is:inline>
+      // Scroll reveal. One observer, transform/opacity only.
+      // The post-load sweep is not optional: web fonts reflow the page
+      // after the observer's first callback, which can leave above-the-fold
+      // elements un-marked and permanently hidden.
+      (() => {
+        const nodes = Array.from(document.querySelectorAll("[data-reveal]"));
+        if (!nodes.length) return;
+
+        const reduced =
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+          !("IntersectionObserver" in window);
+
+        if (reduced) {
+          nodes.forEach((n) => n.classList.add("is-in"));
+          return;
+        }
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add("is-in");
+              io.unobserve(entry.target);
+            }
+          },
+          { rootMargin: "0px 0px -8% 0px", threshold: 0 }
+        );
+
+        nodes.forEach((n) => io.observe(n));
+
+        const sweep = () => {
+          for (const node of nodes) {
+            if (node.classList.contains("is-in")) continue;
+            const rect = node.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.94 && rect.bottom > 0) {
+              node.classList.add("is-in");
+              io.unobserve(node);
+            }
+          }
+        };
+
+        window.addEventListener("load", sweep);
+        if (document.fonts?.ready) {
+          document.fonts.ready.then(() => setTimeout(sweep, 80));
+        }
+        setTimeout(sweep, 1200);
+      })();
+    </script>
+  </body>
+</html>

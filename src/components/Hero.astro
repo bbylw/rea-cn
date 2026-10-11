@@ -1,0 +1,91 @@
+---
+---
+
+<section class="relative overflow-hidden border-b border-line bg-paper">
+  <div class="bg-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden="true"></div>
+  <div
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-paper to-transparent"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="shell relative pb-16 pt-14 sm:pb-20 sm:pt-20">
+    <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-14">
+      <!-- Copy: eyebrow, headline, subtext, actions. Nothing else. -->
+      <div>
+        <p data-reveal class="label inline-flex items-center border border-line-2 bg-paper/85 px-3 py-1.5">
+          本机分析，证据可复核
+        </p>
+
+        <h1
+          data-reveal
+          style="--reveal-delay:80ms"
+          class="display mt-6 text-[clamp(2.35rem,5.4vw,4.05rem)] text-ink"
+        >
+          <span class="block">看清它如何运作，</span>
+          <span class="block">再把功能<span class="text-rust">拿回来</span>。</span>
+        </h1>
+
+        <p
+          data-reveal
+          style="--reveal-delay:160ms"
+          class="mt-7 max-w-[44ch] text-[16.5px] leading-[1.8] text-ink-2"
+        >
+          智能体用 REA 调查本机上的原生二进制、Electron 应用、.NET
+          程序集与网站。没有源代码，也能拿到伪代码、调用链和支撑每条结论的证据。
+        </p>
+
+        <div
+          data-reveal
+          style="--reveal-delay:240ms"
+          class="mt-9 flex flex-wrap items-center gap-3"
+        >
+          <a href="/#start" class="btn btn-solid">开始安装</a>
+          <a href="/guides" class="btn btn-ghost">阅读指南</a>
+        </div>
+      </div>
+
+      <!-- Real product capture -->
+      <figure data-reveal="wipe" style="--reveal-delay:140ms" class="m-0">
+        <div class="relative">
+          <div
+            class="absolute -right-2.5 -top-2.5 hidden h-full w-full border border-line-2 lg:block"
+            aria-hidden="true"
+          >
+          </div>
+          <div
+            class="plate relative border border-ink bg-panel shadow-[0_40px_90px_-48px_rgba(25,24,19,0.7)]"
+          >
+            <div class="flex items-center justify-between border-b border-panel-line px-4 py-2.5">
+              <span class="font-mono text-[10.5px] tracking-[0.2em] text-panel-mute"
+                >HOPPER · 分析桥已连接</span
+              >
+              <span class="font-mono text-[10.5px] tracking-[0.14em] text-panel-mute"
+                >/usr/bin/true</span
+              >
+            </div>
+            <img
+              src="/assets/rea-hopper-analysis.webp"
+              width="1662"
+              height="946"
+              alt="REA 的分析桥在 Hopper 中启动，正在反汇编并格式化一个 Mach-O arm64 二进制文件的 __TEXT 段"
+              class="block w-full"
+              loading="eager"
+              decoding="async"
+            />
+            <div
+              class="flex flex-wrap items-center justify-between gap-x-6 gap-y-1.5 border-t border-panel-line bg-panel-2 px-4 py-2.5 font-mono text-[10.5px] tracking-[0.12em] text-panel-mute"
+            >
+              <span>反汇编 __TEXT</span>
+              <span>格式化 __const</span>
+              <span class="text-rust-3">后台分析进行中</span>
+            </div>
+          </div>
+        </div>
+        <figcaption class="caption mt-4 max-w-[52ch]">
+          真实的分析会话。REA 在本机驱动 Hopper 的分析桥，把反汇编、格式化与交叉引用整理成带证据的结果。
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>

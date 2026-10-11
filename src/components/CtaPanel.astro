@@ -1,0 +1,48 @@
+---
+import CopyCommand from "./react/CopyCommand.tsx";
+---
+
+<section class="relative overflow-hidden bg-panel text-paper">
+  <div
+    class="pointer-events-none absolute -right-40 top-1/2 h-[520px] w-[520px] -translate-y-1/2 bg-rust/15 blur-[120px]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="shell relative py-20 sm:py-28">
+    <div class="grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-end lg:gap-20">
+      <div>
+        <h2 data-reveal class="display text-[clamp(1.9rem,3.6vw,2.7rem)] text-paper">
+          看到喜欢的功能，把它弄明白。
+        </h2>
+        <p data-reveal style="--reveal-delay:70ms" class="mt-6 max-w-[44ch] text-[16px] leading-[1.85] text-panel-body">
+          分析在本机运行。设置流程会先展示将要写入的变更，备份已有配置，你确认后才继续。
+        </p>
+
+        <div data-reveal style="--reveal-delay:140ms" class="mt-9 flex flex-wrap gap-3">
+          <a href="/#start" class="btn btn-rust">开始安装</a>
+          <a href="/guides" class="btn btn-on-dark">阅读指南</a>
+        </div>
+      </div>
+
+      <div data-reveal style="--reveal-delay:120ms">
+        <CopyCommand client:visible command="npx rea-agents setup" size="lg" />
+
+        <dl class="mt-8 grid grid-cols-2 gap-8 border-t border-panel-line pt-6">
+          <div>
+            <dt class="label text-panel-mute">Node.js</dt>
+            <dd class="mt-2 text-[14px] text-panel-text">22.x / 24.x / 26+</dd>
+          </div>
+          <div>
+            <dt class="label text-panel-mute">许可证</dt>
+            <dd class="mt-2 text-[14px] text-panel-text">MIT</dd>
+          </div>
+        </dl>
+
+        <p class="caption mt-8 text-panel-mute">
+          GitHub Star 已达 50,000。感谢每一位报告错误、提出需求与贡献修复的朋友。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

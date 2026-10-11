@@ -1,0 +1,55 @@
+---
+const targets = [
+  "原生二进制文件",
+  "离线 ELF 布局",
+  "EVM 字节码",
+  "已记录的 Linux 崩溃",
+  "JavaScript / Electron",
+  "网站",
+  "已保存的网络捕获",
+  ".NET 程序集",
+  "Android APK",
+  "Android 设备",
+  "JEB 项目",
+  "Android 资源",
+  "固件",
+  "软件包与资源",
+  "进程行为",
+];
+---
+
+<section
+  class="ticker relative overflow-hidden border-b border-line bg-paper"
+  aria-label="支持的分析目标"
+>
+  <a
+    href="/#targets"
+    class="group flex items-center gap-6 border-b border-line px-5 py-2.5 sm:px-8"
+  >
+    <span class="label shrink-0 text-ink transition-colors group-hover:text-rust-2"
+      >支持 15 类目标</span
+    >
+    <span
+      class="shrink-0 font-mono text-[11.5px] tracking-[0.04em] text-muted transition-colors group-hover:text-ink"
+      >跳到完整能力矩阵</span
+    >
+    <span class="ml-auto shrink-0 font-mono text-[12px] text-rust-2" aria-hidden="true">↓</span>
+  </a>
+
+  <div class="marquee py-3.5">
+    <div class="marquee-track items-center">
+      {
+        [0, 1].map((dup) => (
+          <div class="flex items-center" aria-hidden={dup === 1 ? "true" : undefined}>
+            {targets.map((t) => (
+              <span class="flex items-center whitespace-nowrap">
+                <span class="px-6 font-mono text-[12.5px] tracking-[0.06em] text-ink-2">{t}</span>
+                <span class="h-[3px] w-[3px] bg-rust" aria-hidden="true" />
+              </span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

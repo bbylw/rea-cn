@@ -1,0 +1,63 @@
+---
+import CopyCommand from "./react/CopyCommand.tsx";
+---
+
+<section id="start" class="border-b border-line bg-paper">
+  <div class="shell py-20 sm:py-28">
+    <div class="grid gap-14 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.55fr)] lg:gap-20">
+      <div class="lg:sticky lg:top-28 lg:self-start">
+        <h2 data-reveal class="display text-[clamp(1.95rem,3.6vw,2.75rem)] text-ink">
+          两分钟接上你的智能体
+        </h2>
+        <p data-reveal style="--reveal-delay:70ms" class="mt-6 max-w-[34ch] text-[15.5px] leading-[1.8] text-ink-2">
+          装好 Node.js 和 npm 后运行设置命令，选择智能体，检查计划中的变更并批准。完成后重启智能体。
+        </p>
+
+        <div data-reveal style="--reveal-delay:140ms" class="mt-9 border-l-2 border-rust pl-5">
+          <p class="text-[14px] leading-[1.8] text-muted">
+            REA 更新较快，新版本经常包含错误修复。用 npm 安装的 CLI 执行
+            <code class="mx-1 text-ink">rea update</code>，用 npx 时重新执行设置命令。
+          </p>
+        </div>
+      </div>
+
+      <div class="grid gap-px bg-line">
+        <article data-reveal style="--reveal-delay:60ms" class="bg-paper py-8 sm:pr-8">
+          <h3 class="text-[21px] text-ink">设置智能体</h3>
+          <p class="mt-3 max-w-[56ch] text-[14.5px] leading-[1.8] text-muted">
+            设置流程会添加 REA 的 MCP 服务和匹配的工作流指引，并备份已有配置。
+          </p>
+          <div class="mt-6">
+            <CopyCommand client:visible command="npx rea-agents setup" />
+          </div>
+        </article>
+
+        <article data-reveal style="--reveal-delay:120ms" class="bg-paper py-8 sm:pr-8">
+          <h3 class="text-[21px] text-ink">向智能体提问</h3>
+          <p class="mt-3 max-w-[56ch] text-[14.5px] leading-[1.8] text-muted">
+            把 Notes 换成你的目标应用，并描述你想弄清的功能。
+          </p>
+          <div class="mt-6 border border-line-2 bg-paper-2 px-5 py-4">
+            <p class="font-mono text-[13px] leading-[1.7] text-ink">
+              弄清 Notes 应用的搜索功能如何工作，展示证据，并为我的项目实现类似功能。
+            </p>
+          </div>
+        </article>
+
+        <article data-reveal style="--reveal-delay:180ms" class="bg-paper py-8 sm:pr-8">
+          <h3 class="text-[21px] text-ink">或者直接用终端</h3>
+          <p class="mt-3 max-w-[56ch] text-[14.5px] leading-[1.8] text-muted">
+            检查已解包的 JavaScript / Electron 应用目录或 ASAR 文件。把路径换成你的目标路径。
+          </p>
+          <div class="mt-6">
+            <CopyCommand
+              client:visible
+              command="npx -y rea-agents@latest analyze-javascript-application /absolute/path/to/app --json"
+            />
+          </div>
+          <p class="caption mt-4">Windows 路径示例："D:/apps/example"</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>

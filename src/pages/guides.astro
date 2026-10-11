@@ -1,0 +1,132 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import CtaPanel from "../components/CtaPanel.astro";
+
+const guides = [
+  {
+    title: "原生分析",
+    body: "用 Hopper、Ghidra 或 IDA 打开原生二进制，拿到伪代码、汇编、符号与调用链。适合需要深入指令层的逆向任务。",
+    tags: ["Hopper", "Ghidra", "IDA"],
+    href: "https://rea.tools/guides/native/",
+  },
+  {
+    title: "应用分析",
+    body: "分析已解包的 JavaScript / Electron 应用目录或 ASAR 文件，恢复模块、导入、source map、路由、IPC 与原生扩展关系。",
+    tags: ["Node.js", "ASAR", "IPC"],
+    href: "https://rea.tools/guides/javascript/",
+  },
+  {
+    title: "浏览器分析",
+    body: "检查网站的页面结构、脚本与网络观察结果，并按请求获取截图。需要 Chrome 系浏览器。",
+    tags: ["Chrome", "DOM", "Network"],
+    href: "https://rea.tools/guides/browser/",
+  },
+];
+
+const docs = [
+  { label: "安装与设置", note: "智能体注册、提供方配置、更新和卸载", href: "https://github.com/morluto/rea/blob/main/docs/installation.md" },
+  { label: "就绪检查与故障排查", note: "诊断特定智能体或分析引擎", href: "https://github.com/morluto/rea/blob/main/docs/installation.md#check-readiness-for-your-task" },
+  { label: "CLI 与 Evidence", note: "命令、提供方选择、快照、导入导出和退出状态", href: "https://github.com/morluto/rea/blob/main/docs/cli.md" },
+  { label: "MCP 契约", note: "工具结果、会话和引导式调查", href: "https://github.com/morluto/rea/blob/main/docs/mcp-contracts.md" },
+  { label: "智能体提示词", note: "引导式调查的提示词设计", href: "https://github.com/morluto/rea/blob/main/docs/mcp-prompts.md" },
+  { label: "工具目录", note: "构建时生成的工具、提供方与 CLI 命令清单", href: "https://github.com/morluto/rea/blob/main/docs/mcp-contracts.md#generated-catalog" },
+  { label: "路线图", note: "计划中的工作和能力跟踪", href: "https://github.com/morluto/rea/blob/main/docs/roadmap.md" },
+  { label: "测试指南", note: "贡献代码时的验证流程", href: "https://github.com/morluto/rea/blob/main/docs/testing.md" },
+];
+---
+
+<Layout
+  title="使用指南 · REA"
+  description="学习如何使用 REA 进行逆向工程分析：原生分析、JavaScript / Electron 分析与浏览器分析三类实操指南。"
+>
+  <PageHeader
+    eyebrow="使用指南"
+    title="实操指南：三类目标，一套流程"
+    lead="先从目标类型入手。每份指南都说明前提条件、执行方式、返回的结果契约，以及运行时捕获对系统的影响范围。"
+    meta={["指南数量|3 类", "结果契约|证据 + 限制", "更新方式|rea update"]}
+  />
+
+  <section class="border-b border-line bg-paper">
+    <div class="shell py-16 sm:py-20">
+      <ul class="border-t border-line">
+        {
+          guides.map((g, i) => (
+            <li data-reveal style={`--reveal-delay:${i * 90}ms`} class="border-b border-line">
+              <a
+                href={g.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="row-lift group block py-8"
+              >
+                <div class="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-10">
+                  <div>
+                    <h2 class="text-[24px] text-ink transition-colors duration-300 group-hover:text-rust-2 sm:text-[27px]">
+                      {g.title}
+                    </h2>
+                    <p class="mt-3 max-w-[56ch] text-[15.5px] leading-[1.8] text-ink-2">
+                      {g.body}
+                    </p>
+                    <ul class="mt-5 flex flex-wrap gap-2">
+                      {g.tags.map((t) => (
+                        <li class="border border-line px-2.5 py-1 font-mono text-[10.5px] tracking-[0.12em] text-muted">
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <span
+                    class="font-mono text-[12px] tracking-[0.1em] text-muted transition-transform duration-500 group-hover:translate-x-1 sm:self-center"
+                    aria-hidden="true"
+                  >
+                    打开 ↗
+                  </span>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="border-b border-line bg-paper-2">
+    <div class="shell py-16 sm:py-20">
+      <div class="grid gap-12 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.6fr)] lg:gap-20">
+        <div>
+          <h2 data-reveal class="display text-[clamp(1.8rem,3.2vw,2.5rem)] text-ink">
+            具体选项与结果契约
+          </h2>
+          <p data-reveal style="--reveal-delay:70ms" class="mt-6 max-w-[34ch] text-[15px] leading-[1.8] text-ink-2">
+            前提条件、参数、退出状态与证据结构都在这里定义。
+          </p>
+        </div>
+
+        <ul data-reveal style="--reveal-delay:100ms" class="grid border-t border-line sm:grid-cols-2 sm:border-l">
+          {
+            docs.map((d) => (
+              <li class="border-b border-line sm:border-r">
+                <a
+                  href={d.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group block h-full px-5 py-5 transition-colors duration-300 hover:bg-paper"
+                >
+                  <span class="flex items-baseline justify-between gap-3">
+                    <span class="inline-block text-[15.5px] text-ink transition-colors duration-300 group-hover:text-rust-2">
+                      {d.label}
+                    </span>
+                    <span class="font-mono text-[11px] text-muted" aria-hidden="true">↗</span>
+                  </span>
+                  <span class="mt-2 block text-[13px] leading-relaxed text-muted">{d.note}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <CtaPanel />
+</Layout>

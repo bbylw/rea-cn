@@ -1,0 +1,40 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  meta?: string[];
+}
+
+const { eyebrow, title, lead, meta = [] } = Astro.props;
+---
+
+<section class="relative overflow-hidden border-b border-line bg-paper">
+  <div class="bg-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true"></div>
+  <div class="shell relative pb-14 pt-12 sm:pb-18 sm:pt-16">
+    <nav class="flex items-center font-mono text-[11.5px] tracking-[0.1em] text-muted" aria-label="面包屑">
+      <a href="/" class="-ml-2 inline-block px-2 py-1.5 transition-colors hover:text-ink">首页</a>
+      <span class="mx-1 text-line-2" aria-hidden="true">/</span>
+      <span class="py-1.5 text-ink">{eyebrow}</span>
+    </nav>
+
+    <h1 class="display mt-7 max-w-[18em] text-[clamp(2.1rem,5vw,3.5rem)] text-ink">{title}</h1>
+    <p class="lede mt-6">{lead}</p>
+
+    {
+      meta.length > 0 && (
+        <dl class="mt-10 grid grid-cols-2 gap-8 border-t border-line pt-6 sm:grid-cols-4">
+          {meta.map((m) => {
+            const [k, v] = m.split("|");
+            return (
+              <div>
+                <dt class="label">{k}</dt>
+                <dd class="mt-2.5 text-[15px] text-ink">{v}</dd>
+              </div>
+            );
+          })}
+        </dl>
+      )
+    }
+  </div>
+</section>

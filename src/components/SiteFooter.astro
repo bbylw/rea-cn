@@ -1,0 +1,94 @@
+---
+const columns = [
+  {
+    title: "文档",
+    links: [
+      { label: "安装与设置", href: "https://github.com/morluto/rea/blob/main/docs/installation.md" },
+      { label: "CLI 与 Evidence", href: "https://github.com/morluto/rea/blob/main/docs/cli.md" },
+      { label: "MCP 契约", href: "https://github.com/morluto/rea/blob/main/docs/mcp-contracts.md" },
+      { label: "工具目录", href: "https://github.com/morluto/rea/blob/main/docs/mcp-contracts.md#generated-catalog" },
+      { label: "路线图", href: "https://github.com/morluto/rea/blob/main/docs/roadmap.md" },
+    ],
+  },
+  {
+    title: "指南",
+    links: [
+      { label: "原生分析", href: "https://rea.tools/guides/native/" },
+      { label: "应用分析", href: "https://rea.tools/guides/javascript/" },
+      { label: "浏览器分析", href: "https://rea.tools/guides/browser/" },
+      { label: "就绪检查与故障排查", href: "https://github.com/morluto/rea/blob/main/docs/installation.md#check-readiness-for-your-task" },
+    ],
+  },
+  {
+    title: "案例",
+    links: [
+      { label: "DX-Ball 声像计算", href: "https://rea.tools/showcase/dx-ball/" },
+      { label: "Notion 剪贴板桥", href: "https://rea.tools/showcase/notion/" },
+      { label: "TH04 环形子弹", href: "https://rea.tools/showcase/th04/" },
+      { label: "更多案例", href: "https://rea.tools/showcase/" },
+    ],
+  },
+  {
+    title: "项目",
+    links: [
+      { label: "GitHub", href: "https://github.com/morluto/rea" },
+      { label: "Discord 社区", href: "https://discord.gg/GkcryMnJDM" },
+      { label: "npm 包", href: "https://www.npmjs.com/package/rea-agents" },
+      { label: "参与贡献", href: "https://github.com/morluto/rea/blob/main/CONTRIBUTING.md" },
+      { label: "安全政策", href: "https://github.com/morluto/rea/blob/main/SECURITY.md" },
+    ],
+  },
+];
+---
+
+<footer class="relative overflow-hidden bg-panel text-paper">
+  <div class="shell py-16 sm:py-20">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,2.1fr)] lg:gap-20">
+      <div data-reveal="left">
+        <div class="flex items-center gap-2.5">
+          <span
+            class="flex h-8 w-8 items-center justify-center bg-rust font-mono text-[13px] font-bold text-white"
+            aria-hidden="true">R</span
+          >
+          <span class="font-mono text-[15px] font-bold tracking-[0.16em]">REA</span>
+        </div>
+        <p class="mt-6 max-w-[26ch] font-display text-[21px] leading-[1.4] text-panel-body">
+          看到喜欢的功能，弄清它的工作原理，深入到二进制层面。
+        </p>
+        <code class="mt-7 inline-block border border-panel-line bg-panel-2 px-3.5 py-2 font-mono text-[12.5px] text-rust-3">
+          npx rea-agents setup
+        </code>
+      </div>
+
+      <div class="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+        {
+          columns.map((col, i) => (
+            <div data-reveal style={`--reveal-delay:${i * 60}ms`}>
+              <h3 class="label text-panel-mute">{col.title}</h3>
+              <ul class="mt-5 space-y-3">
+                {col.links.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="-mx-2 inline-block px-2 py-1.5 text-[13.5px] text-panel-body transition-colors duration-300 hover:text-paper"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mt-14 border-t border-panel-line pt-8">
+      <p class="max-w-[80ch] text-[12.5px] leading-relaxed text-panel-mute">
+        免责声明：REA 为合法的逆向工程研究、分析和重建提供工具。你有责任取得所需授权并遵守适用法律。项目不支持非法或未经授权的使用。
+      </p>
+    </div>
+  </div>
+</footer>

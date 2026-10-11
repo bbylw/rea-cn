@@ -1,0 +1,441 @@
+@import "tailwindcss";
+
+/* ============================================================
+   REA — Evidence Ledger
+   Visual language: an analysis report. Hairline rules, tabular
+   figures, one rust accent reserved for evidence and actions.
+
+   SHAPE LOCK: every container and control is sharp (radius 0).
+   No exceptions. Circles are not part of this system.
+
+   COLOR LOCK: one accent (rust). `signal` green is semantic only
+   (verified / resolved) and never used decoratively.
+
+   All text/background pairings below are verified against WCAG AA.
+   ============================================================ */
+
+@theme {
+  /* surfaces */
+  --color-paper: #f4f1ea;
+  --color-paper-2: #eae5da;
+  --color-paper-3: #ded8c9;
+
+  /* ink */
+  --color-ink: #191813; /* 15.8 on paper */
+  --color-ink-2: #3b3830; /* 10.4 on paper */
+  --color-muted: #5f5a4a; /*  6.1 on paper, 4.9 on paper-3 */
+
+  /* rules */
+  --color-line: #ddd6c6;
+  --color-line-2: #c6bca4;
+
+  /* the one accent */
+  --color-rust: #a8482a; /* fills, 18px+ text */
+  --color-rust-2: #8f3c22; /* small text on light: 6.6 */
+  --color-rust-3: #e8b099; /* accent on dark: 9.7 */
+  --color-rust-wash: #a8482a14;
+
+  /* semantic: verified / resolved only */
+  --color-signal: #456338; /* 6.0 on paper */
+
+  /* dark chapter */
+  --color-panel: #16150f;
+  --color-panel-2: #211f18;
+  --color-panel-3: #333026;
+  --color-panel-text: #f4f1ea; /* 16.2 */
+  --color-panel-body: #b6b3ad; /*  7.9 */
+  --color-panel-mute: #a19d93; /*  6.1 */
+  --color-panel-line: #2e2b22;
+  --color-panel-line-2: #3d392e;
+
+  --font-display: "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
+  --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", ui-monospace, "Cascadia Mono", monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --shell: 1400px;
+}
+
+/* ---------- Base ---------- */
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-rust);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  code,
+  kbd,
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  img {
+    /* nothing in this system has rounded corners */
+    border-radius: 0;
+  }
+}
+@layer components {
+
+  /* ---------- Layout shell ---------- */
+
+  .shell {
+    width: 100%;
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .shell {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* ---------- Atmosphere ---------- */
+
+  /* Faint engineering grid. Used once, on the hero, to seat the
+     instrument metaphor. Not a general-purpose background. */
+  .bg-grid {
+    background-image: linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+    background-size: 88px 88px;
+  }
+
+  .bg-grid-dark {
+    background-image: linear-gradient(to right, #ffffff0e 1px, transparent 1px),
+      linear-gradient(to bottom, #ffffff0e 1px, transparent 1px);
+    background-size: 88px 88px;
+  }
+
+  /* Grain sits on one fixed, non-scrolling layer so it never repaints during
+     scroll. `multiply` is safe over both the light and the dark chapter; a
+     `screen` blend on an element that carries its own background would wash the
+     whole section out instead of texturing it. */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- Type utilities ---------- */
+
+  .display {
+    font-family: var(--font-display);
+    line-height: 1.08;
+    letter-spacing: -0.022em;
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Small mono label. Used at most twice per page (eyebrow restraint).
+     Tracking is kept modest because most labels here are CJK, where wide
+     letter-spacing reads as broken spacing rather than as precision. */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* Data caption, sitting under a figure or a figure row. */
+  .caption {
+    font-family: var(--font-mono);
+    font-size: 0.71875rem;
+    line-height: 1.65;
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+  }
+
+  .lede {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-ink-2);
+    max-width: 62ch;
+  }
+
+  .prose-body {
+    font-size: 0.9375rem;
+    line-height: 1.8;
+    color: var(--color-ink-2);
+  }
+
+  /* ---------- Links ---------- */
+
+  .link-underline {
+    background-image: linear-gradient(var(--color-ink), var(--color-ink));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 0.4s var(--ease-out-expo), color 0.3s var(--ease-out-expo);
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+
+  .link-underline-rust {
+    background-image: linear-gradient(var(--color-rust), var(--color-rust));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 0.4s var(--ease-out-expo), color 0.3s var(--ease-out-expo);
+  }
+  .link-underline-rust:hover {
+    background-size: 100% 1px;
+  }
+
+  /* ---------- Buttons ---------- */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    padding: 0.9rem 1.4rem;
+    border: 1px solid transparent;
+    transition: background-color 0.3s var(--ease-out-expo), color 0.3s var(--ease-out-expo),
+      border-color 0.3s var(--ease-out-expo), transform 0.14s var(--ease-out-expo);
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  /* primary: 15.8:1 */
+  .btn-solid {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-solid:hover {
+    background: var(--color-rust);
+    color: #fff;
+  }
+
+  /* secondary: ink on paper, 15.8:1 at rest and on hover */
+  .btn-ghost {
+    border-color: var(--color-line-2);
+    color: var(--color-ink);
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-ink);
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  /* accent fill: 5.8:1 */
+  .btn-rust {
+    background: var(--color-rust);
+    color: #fff;
+  }
+  .btn-rust:hover {
+    background: var(--color-rust-2);
+  }
+
+  /* on the dark chapter: paper text on a transparent well */
+  .btn-on-dark {
+    border-color: var(--color-panel-line-2);
+    color: var(--color-panel-text);
+    background: transparent;
+  }
+  .btn-on-dark:hover {
+    border-color: var(--color-panel-text);
+    background: var(--color-panel-text);
+    color: var(--color-panel);
+  }
+
+  /* ---------- Scroll reveal ----------
+     Progressive enhancement. Hidden state only applies once the
+     `js` class is on <html>, so a failed script leaves the page
+     fully readable instead of blank.
+
+     IMPORTANT: a `clip-path` on the observed element itself would
+     zero its own intersection rect and the observer would never
+     fire. The wipe therefore lives on the child. */
+
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    transition: opacity 0.9s var(--ease-out-expo) var(--reveal-delay, 0ms),
+      transform 0.9s var(--ease-out-expo) var(--reveal-delay, 0ms);
+  }
+  .js [data-reveal="left"] {
+    transform: translate3d(-26px, 0, 0);
+  }
+  .js [data-reveal="wipe"] {
+    opacity: 1;
+    transform: none;
+  }
+  .js [data-reveal="wipe"] > * {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1.2s var(--ease-out-expo) var(--reveal-delay, 0ms);
+  }
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+  .js [data-reveal="wipe"].is-in > * {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* ---------- Marquee (the page's only one) ---------- */
+
+  .ticker {
+    mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 52s linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  /* ---------- Terminal line cascade (kept: it explains a real
+     command sequence, not a fabricated product UI) ---------- */
+
+  .term-line {
+    opacity: 0;
+    animation: term-in 0.5s var(--ease-out-expo) forwards;
+    animation-delay: var(--line-delay, 0ms);
+  }
+  @keyframes term-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* ---------- Accordion ---------- */
+
+  .acc-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s var(--ease-out-expo);
+  }
+  .acc-panel[data-open="true"] {
+    grid-template-rows: 1fr;
+  }
+  .acc-panel > div {
+    overflow: hidden;
+  }
+
+  /* ---------- Tabs ---------- */
+
+  /* ---------- Row + figure hover ---------- */
+
+  .row-lift {
+    transition: background-color 0.35s var(--ease-out-expo),
+      padding-left 0.35s var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .row-lift:hover {
+      background-color: var(--color-paper);
+      padding-left: 0.9rem;
+    }
+  }
+
+  .plate {
+    transition: border-color 0.35s var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .plate:hover {
+      border-color: var(--color-line-2);
+    }
+  }
+
+  .case-figure img {
+    transition: transform 0.7s var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .case-figure:hover img {
+      transform: scale(1.025);
+    }
+  }
+
+  /* ---------- Accessibility ---------- */
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+    .js [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .js [data-reveal="wipe"] > * {
+      clip-path: none !important;
+    }
+    .term-line {
+      opacity: 1 !important;
+    }
+    .marquee-track {
+      animation: none !important;
+    }
+  }
+}

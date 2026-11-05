@@ -259,6 +259,24 @@ npx rea-agents@latest setup
 
 请按照 [SECURITY.md](https://github.com/morluto/rea/blob/main/SECURITY.md) 报告漏洞。
 
+## 公众号文章（杰森写代码）  文章案例内容
+
+AI复刻网站又进化了！AI+REA+Playwright最近发现一个开源项目 REA（Reverse Engineer Anything）。
+
+以前让 AI 复刻网站，基本就是看截图猜代码。现在通过 REA，可以分析网页 DOM、JS 脚本、资源和网络请求，配合 Playwright，复刻效果更有保障。
+
+实际操作流程：
+
+1. 安装 REA：`npx rea-agents setup`，选择 Claude Code 或 Codex。
+2. 启动 Chrome 远程调试，打开需要复刻的网站。
+3. 打开 Claude Code 或 Codex，输入提示词：
+
+「使用 REA 分析 https://example.com 的页面结构、样式、资源及交互逻辑，结合 Playwright 浏览页面，使用 Next.js + React + Tailwind CSS v4 + shadcn/ui 复刻前端界面。」
+
+4. 启动本地项目，使用 Playwright 对比参考网站与本地页面的截图，让 AI 持续调整样式和交互。
+
+REA 负责分析，AI 负责写代码，Playwright 负责验证，整个流程形成闭环。
+
 ## Star 历史
 
 🎉 **GitHub Star 达到 50,000 个，感谢大家！**

@@ -12,8 +12,8 @@ const ITEMS: Item[] = [
     a: "任何支持本地 MCP 服务的智能体都可以使用。设置流程会自动配置受支持的智能体（Claude Code、Codex、Cursor、Gemini CLI、Grok Build 等）；其他客户端可以通过手动注册 MCP 接入。",
   },
   {
-    q: "需要 Hopper、Ghidra 或 IDA 吗？",
-    a: "深入的原生分析需要其中一个引擎。静态 JavaScript 和 .NET 检查不需要原生分析引擎。设置流程可以在你批准后安装 Hopper；Ghidra 和 IDA 使用你已有的安装。不同提供方支持的原生格式和主机系统有所不同。",
+    q: "需要 Hopper、Ghidra、IDA 或 Kuna 吗？",
+    a: "深入的原生分析需要其中一个引擎。静态 JavaScript 和 .NET 检查不需要原生分析引擎。设置流程可以在你批准后安装 Hopper；Ghidra、IDA 和 Kuna 使用你已有的安装。不同提供方支持的原生格式和主机系统有所不同。",
   },
   {
     q: "需要先启动 Hopper 吗？",

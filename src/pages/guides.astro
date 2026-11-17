@@ -22,29 +22,35 @@ const guides = [
     tags: ["Chrome", "DOM", "Network"],
     href: "https://rea.tools/guides/browser/",
   },
+  {
+    title: "RL 环境",
+    body: "录制 Web 应用会话，将其转为工具和本地数据，再添加任务和奖励检查。导出的环境用 AgentEnv 运行，可用于 RL 训练或智能体评测。",
+    tags: ["AgentEnv", "Docker", "HAR"],
+    href: "https://rea.tools/guides/rl-environments/",
+  },
 ];
 
 const docs = [
-  { label: "安装与设置", note: "智能体注册、提供方配置、更新和卸载", href: "https://github.com/morluto/rea/blob/main/docs/installation.md" },
-  { label: "就绪检查与故障排查", note: "诊断特定智能体或分析引擎", href: "https://github.com/morluto/rea/blob/main/docs/installation.md#check-readiness-for-your-task" },
-  { label: "CLI 与 Evidence", note: "命令、提供方选择、快照、导入导出和退出状态", href: "https://github.com/morluto/rea/blob/main/docs/cli.md" },
-  { label: "MCP 契约", note: "工具结果、会话和引导式调查", href: "https://github.com/morluto/rea/blob/main/docs/mcp-contracts.md" },
-  { label: "智能体提示词", note: "引导式调查的提示词设计", href: "https://github.com/morluto/rea/blob/main/docs/mcp-prompts.md" },
-  { label: "工具目录", note: "构建时生成的工具、提供方与 CLI 命令清单", href: "https://github.com/morluto/rea/blob/main/docs/mcp-contracts.md#generated-catalog" },
-  { label: "路线图", note: "计划中的工作和能力跟踪", href: "https://github.com/morluto/rea/blob/main/docs/roadmap.md" },
-  { label: "测试指南", note: "贡献代码时的验证流程", href: "https://github.com/morluto/rea/blob/main/docs/testing.md" },
+  { label: "安装与设置", note: "智能体注册、提供方配置、更新和卸载", href: "https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md" },
+  { label: "就绪检查与故障排查", note: "诊断特定智能体或分析引擎", href: "https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#check-readiness-for-your-task" },
+  { label: "CLI 与 Evidence", note: "命令、提供方选择、快照、导入导出和退出状态", href: "https://github.com/morluto/rea/blob/main/docs/getting-started/cli.md" },
+  { label: "MCP 契约", note: "工具结果、会话和引导式调查", href: "https://github.com/morluto/rea/blob/main/docs/reference/mcp-contracts.md" },
+  { label: "智能体提示词", note: "引导式调查的提示词设计", href: "https://github.com/morluto/rea/blob/main/docs/getting-started/mcp-prompts.md" },
+  { label: "工具目录", note: "构建时生成的工具、提供方与 CLI 命令清单", href: "https://github.com/morluto/rea/blob/main/docs/reference/mcp-contracts.md#generated-catalog" },
+  { label: "路线图", note: "计划中的工作和能力跟踪", href: "https://github.com/morluto/rea/blob/main/docs/development/roadmap.md" },
+  { label: "测试指南", note: "贡献代码时的验证流程", href: "https://github.com/morluto/rea/blob/main/docs/development/testing.md" },
 ];
 ---
 
 <Layout
   title="使用指南 · REA"
-  description="学习如何使用 REA 进行逆向工程分析：原生分析、JavaScript / Electron 分析与浏览器分析三类实操指南。"
+  description="学习如何使用 REA 进行逆向工程分析：原生分析、JavaScript / Electron 分析、浏览器分析与 RL 环境构建四类实操指南。"
 >
   <PageHeader
     eyebrow="使用指南"
-    title="实操指南：三类目标，一套流程"
+    title="实操指南：四类玩法，一套流程"
     lead="先从目标类型入手。每份指南都说明前提条件、执行方式、返回的结果契约，以及运行时捕获对系统的影响范围。"
-    meta={["指南数量|3 类", "结果契约|证据 + 限制", "更新方式|rea update"]}
+    meta={["指南数量|4 类", "结果契约|证据 + 限制", "更新方式|rea update"]}
   />
 
   <section class="border-b border-line bg-paper">

@@ -1,0 +1,79 @@
+---
+import CopyCommand from "./react/CopyCommand.tsx";
+---
+
+<section id="rl" class="border-b border-line bg-paper-2">
+  <div class="shell py-20 sm:py-28">
+    <div class="grid gap-14 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.55fr)] lg:gap-20">
+      <div class="lg:sticky lg:top-28 lg:self-start">
+        <p data-reveal class="label text-rust-2">新工作流</p>
+        <h2 data-reveal style="--reveal-delay:60ms" class="display mt-5 text-[clamp(1.95rem,3.6vw,2.75rem)] text-ink">
+          构建 RL 环境
+        </h2>
+        <p data-reveal style="--reveal-delay:120ms" class="mt-6 max-w-[36ch] text-[15.5px] leading-[1.8] text-ink-2">
+          将录制的 Web 应用会话转为可运行的环境，用于训练和测试 AI 智能体。
+        </p>
+        <p data-reveal style="--reveal-delay:170ms" class="mt-4 max-w-[38ch] text-[14.5px] leading-[1.8] text-muted">
+          智能体录制浏览器的请求与应用的响应，REA 用它们构建本地环境，让智能体在不运行原应用的情况下练习任务。只有录制证据确认了某项修改的效果，环境才会支持该修改：要支持删除文件夹，录制必须先展示删除前的文件夹，再确认它已消失。
+        </p>
+
+        <div data-reveal style="--reveal-delay:220ms" class="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+          <a
+            href="https://rea.tools/guides/rl-environments/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-underline -mx-2 inline-block px-2 py-1.5 font-mono text-[12.5px] tracking-[0.08em] text-ink"
+            >构建环境指南 ↗</a
+          >
+          <a
+            href="https://x.com/reatools/status/2112574822584918075?s=20"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-underline -mx-2 inline-block px-2 py-1.5 font-mono text-[12.5px] tracking-[0.08em] text-muted"
+            >在 X 上观看演示 ↗</a
+          >
+        </div>
+      </div>
+
+      <div class="grid gap-px bg-line">
+        <article data-reveal style="--reveal-delay:60ms" class="bg-paper-2 py-8 sm:pr-8">
+          <h3 class="text-[21px] text-ink">向智能体提需求</h3>
+          <p class="mt-3 max-w-[56ch] text-[14.5px] leading-[1.8] text-muted">
+            在智能体中设置好 REA 后，把示例中的网址和文件夹任务替换为你自己的。
+          </p>
+          <div class="mt-6 border border-line-2 bg-paper px-5 py-4">
+            <p class="font-mono text-[13px] leading-[1.7] text-ink">
+              使用 REA 为我的测试 Web 应用构建 RL 环境，网址是
+              http://127.0.0.1:3000。覆盖列出、创建、重命名和删除文件夹。可以创建和删除测试文件夹，但不要修改已有数据。将环境保存到名为
+              my-env 的文件夹。检查哪些操作可用，并告诉我如何运行。
+            </p>
+          </div>
+        </article>
+
+        <article data-reveal style="--reveal-delay:120ms" class="bg-paper-2 py-8 sm:pr-8">
+          <h3 class="text-[21px] text-ink">或者直接用命令行</h3>
+          <p class="mt-3 max-w-[56ch] text-[14.5px] leading-[1.8] text-muted">
+            如果你已经把应用在浏览器中的请求和响应录制成 HAR 文件，可以直接构建并运行环境。
+          </p>
+          <div class="mt-6 grid gap-4">
+            <CopyCommand
+              client:visible
+              command="rea environment-build ./session.har ./my-env --name my-env --json"
+            />
+            <CopyCommand client:visible command="agent-env run ./my-env" />
+          </div>
+          <p class="caption mt-4">运行导出的环境还需要 AgentEnv 和 Docker。</p>
+        </article>
+
+        <article data-reveal style="--reveal-delay:180ms" class="bg-paper-2 py-8 sm:pr-8">
+          <h3 class="text-[21px] text-ink">接入 RL 框架</h3>
+          <p class="mt-3 max-w-[56ch] text-[14.5px] leading-[1.8] text-muted">
+            REA 导出可直接运行的环境，并附带检查环境能否启动和响应的基本测试。将它接入 RL
+            框架，即可设置任务目标、添加奖励检查并运行训练。REA 也支持为 Linux
+            桌面应用构建环境，智能体通过截图、鼠标和键盘使用它。
+          </p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>

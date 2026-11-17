@@ -22,7 +22,7 @@ const GROUPS: Group[] = [
       {
         name: "原生二进制文件",
         output: "伪代码、汇编、字符串、符号、调用和引用",
-        requirement: "Hopper、Ghidra 或 IDA",
+        requirement: "Hopper、Ghidra、IDA 或 Kuna",
       },
       {
         name: "离线 ELF 布局",
@@ -47,6 +47,123 @@ const GROUPS: Group[] = [
     ],
   },
   {
+    id: "static",
+    label: "二进制与静态工件",
+    caption: "内置静态检查，多数目标无需额外引擎",
+    targets: [
+      {
+        name: "Go 二进制文件",
+        output: "内嵌编译器版本、模块、替换项和构建设置",
+        requirement: "内置静态 ELF / PE / thin Mach-O 检查；无需安装 Go",
+      },
+      {
+        name: "Rust 二进制文件",
+        output: "内嵌的 cargo-auditable 依赖清单",
+        requirement: "内置静态检查",
+      },
+      {
+        name: "Erlang BEAM",
+        output: "IFF 块、原子、导出和表",
+        requirement: "内置静态 BEAM 检查",
+      },
+      {
+        name: "PE 证书",
+        output: "Authenticode WIN_CERTIFICATE 条目，以及 PKCS#7 签名者 / X.509 身份字段",
+        requirement: "内置静态 PE 检查",
+      },
+      {
+        name: "PE 导入",
+        output: "导入与延迟加载 DLL 名称、序号、IAT RVA 和 pefile 导入哈希",
+        requirement: "内置静态 PE 检查",
+      },
+      {
+        name: "Windows 快捷方式",
+        output: "Shell Link 目标、参数、工作目录、ExtraData 与 Tracker 信息",
+        requirement: "内置静态 LNK 检查",
+      },
+      {
+        name: "ELF notes",
+        output: "PT_NOTE / SHT_NOTE 所有者、类型、GNU build-id 和 ABI 标签字段",
+        requirement: "内置静态 ELF 检查",
+      },
+      {
+        name: "DWARF 编译单元",
+        output: "编译单元名称、目录、生成器、语言和 dwo_name",
+        requirement: "内置静态 ELF、Mach-O 与 PE 检查",
+      },
+      {
+        name: "ELF 依赖",
+        output: "DT_NEEDED、SONAME、RPATH / RUNPATH、GNU 版本和未定义导入",
+        requirement: "内置静态 ELF 检查",
+      },
+      {
+        name: "二进制加固",
+        output: "ELF、PE 与 Mach-O 的 PIE、NX、RELRO、CFG 及相关头部标志",
+        requirement: "内置静态头部检查",
+      },
+      {
+        name: "Apple IPS 崩溃",
+        output: ".ips 元数据、线程、映像、寄存器和崩溃分类",
+        requirement: "内置静态 JSON 检查",
+      },
+      {
+        name: "Linux 内核模块",
+        output: ".modinfo 键、__versions CRC、this_module 存在性和签名尾部",
+        requirement: "内置静态 ELF 检查",
+      },
+      {
+        name: "WASM 工件",
+        output: "验证、节、精确的导入 / 导出 WAT 形式及解码后的 WAT",
+        requirement: "由调用方提供的 WABT 1.0.42",
+      },
+      {
+        name: "GPU 代码对象",
+        output: "CUDA / HIP 目标、选定内核参数和资源、保留的 PTX 文本",
+        requirement: "内置静态 ELF / PE / fatbin / CUBIN / PTX 检查",
+      },
+      {
+        name: "模型文件",
+        output: "GGUF / safetensors 元数据、张量声明和派生总量",
+        requirement: "头部检查；可选完整文件哈希",
+      },
+      {
+        name: "IL2CPP 元数据",
+        output: "Unity global-metadata.dat 程序集映像、类型和方法名、索引范围",
+        requirement: "静态解码版本 24、27、29、31 和 39；无需 Unity",
+      },
+      {
+        name: "Godot PCK",
+        output: "归档目录与提取、原始头部和目录信息、选定内容身份",
+        requirement: "静态格式 2、3 和 4；无需 Godot",
+      },
+      {
+        name: "NuGet 包",
+        output: "包标识、依赖组、许可证、仓库及 ZIP 内容",
+        requirement: "内置静态 .nupkg 检查",
+      },
+      {
+        name: "PyInstaller",
+        output: "CArchive、PYZ 和 Python 字节码",
+        requirement: "静态检查",
+      },
+      {
+        name: "Deno compile 二进制",
+        output: "虚拟文件、入口点、录制的选项和 npm 快照长度",
+        requirement: "静态检查",
+      },
+      {
+        name: "SQLite 数据库",
+        output: "表、列、索引、视图、触发器和选定普通表的行",
+        requirement: "本地数据库 / WAL 快照；Node.js 24.x（≥24.15）或 26+",
+      },
+      {
+        name: "桌面安装目录",
+        output: "运行时候选、支持文件、组件标记和后续操作",
+        requirement: "有界的目录与文件头检查",
+      },
+    ],
+  },
+  {
     id: "apps",
     label: "应用与脚本",
     caption: "静态读取提供的文件，不运行目标",
@@ -54,7 +171,7 @@ const GROUPS: Group[] = [
       {
         name: "JavaScript / Electron",
         output: "模块、导入、source map、路由、IPC 和原生扩展关系",
-        requirement: "Node.js 和 npm",
+        requirement: "Node.js 和 npm；Linux 上需要兼容 procps 的 ps",
       },
       {
         name: ".NET 程序集",
@@ -76,7 +193,7 @@ const GROUPS: Group[] = [
   {
     id: "mobile",
     label: "移动端",
-    caption: "APK、设备与资源三类入口",
+    caption: "APK、设备、资源与签名检查",
     targets: [
       {
         name: "Android APK",
@@ -93,6 +210,16 @@ const GROUPS: Group[] = [
         output: "解码后的清单、字符串表、语言区域和版本信息",
         requirement: "调用方提供的 Apktool 启动器",
       },
+      {
+        name: "Flutter 应用",
+        output: "Dart 快照哈希、按 ABI 的库摘要及引擎构建溯源",
+        requirement: "无（静态 APK 解析）",
+      },
+      {
+        name: "APK 签名",
+        output: "v1 / v2 / v3 / v3.1 签名者、证书指纹、密钥轮换和摘要自洽性",
+        requirement: "内置静态检查",
+      },
     ],
   },
   {
@@ -108,7 +235,22 @@ const GROUPS: Group[] = [
       {
         name: "已保存的网络捕获",
         output: "请求、响应、可访问的载荷和来源位置",
-        requirement: "HAR；原生 mitmproxy 捕获需要 Linux 上的 mitmdump",
+        requirement: "HAR / Fiddler Everywhere SAZ；原生 mitmproxy 捕获需要 Linux 上的 mitmdump",
+      },
+      {
+        name: "数据包捕获",
+        output: "端点、DNS、TLS SNI、协议分布和 HTTP 请求",
+        requirement: "调用方提供的 tshark 和 capinfos（已在 Linux 验证）",
+      },
+      {
+        name: "抓包文件",
+        output: "指定字段、重复值、过滤条件与解码规则",
+        requirement: "Linux：TShark 4.x + prlimit",
+      },
+      {
+        name: "录制的逻辑信号",
+        output: "解码注释、样本范围和诊断信息",
+        requirement: "Linux：sigrok-cli 0.7.2 + prlimit",
       },
       {
         name: "进程行为",

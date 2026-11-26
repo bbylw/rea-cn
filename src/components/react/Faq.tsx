@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Item {
   q: string;
@@ -42,10 +42,27 @@ const ROW = "grid gap-x-10 sm:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]";
 
 export default function Faq() {
   const [open, setOpen] = useState<number | null>(0);
-  const baseId = useId();
+  const listRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const onBeforeMatch = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const idxAttr = target.dataset.faqIndex;
+      if (idxAttr !== undefined) {
+        setOpen(Number(idxAttr));
+      }
+    };
+
+    list.addEventListener("beforematch", onBeforeMatch);
+    return () => list.removeEventListener("beforematch", onBeforeMatch);
+  }, []);
 
   return (
-    <ul>
+    <ul ref={listRef}>
       {ITEMS.map((item, i) => {
         const isOpen = open === i;
         return (
@@ -54,9 +71,7 @@ export default function Faq() {
               <h3>
                 <button
                   type="button"
-                  id={`${baseId}-trigger-${i}`}
                   aria-expanded={isOpen}
-                  aria-controls={`${baseId}-panel-${i}`}
                   onClick={() => setOpen(isOpen ? null : i)}
                   className="group flex w-full items-start justify-between gap-6 py-6 text-left transition-colors duration-300"
                 >
@@ -79,21 +94,17 @@ export default function Faq() {
               </h3>
 
               <div
-                id={`${baseId}-panel-${i}`}
-                role="region"
-                aria-labelledby={`${baseId}-trigger-${i}`}
-                className="acc-panel min-w-0"
-                data-open={isOpen}
+                data-faq-index={i}
+                hidden={!isOpen ? ("until-found" as unknown as boolean) : undefined}
+                className="min-w-0"
               >
-                <div>
-                  <div className="max-w-[64ch] pb-8">
-                    <p className="text-[15px] leading-[1.85] text-muted">{item.a}</p>
-                    {item.code && (
-                      <code className="mt-4 inline-block border border-line-2 bg-paper px-3.5 py-2 font-mono text-[12.5px] text-ink">
-                        {item.code}
-                      </code>
-                    )}
-                  </div>
+                <div className="max-w-[64ch] pb-8 sm:pt-6">
+                  <p className="text-[15px] leading-[1.85] text-muted">{item.a}</p>
+                  {item.code && (
+                    <code className="mt-4 inline-block border border-line-2 bg-paper px-3.5 py-2 font-mono text-[12.5px] text-ink">
+                      {item.code}
+                    </code>
+                  )}
                 </div>
               </div>
             </div>

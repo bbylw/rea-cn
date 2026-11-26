@@ -29,11 +29,11 @@ const allGuides = [
 <Layout title={`${title} · REA`} description={description}>
   <section class="border-b border-line bg-paper">
     <div class="shell py-14 sm:py-20">
-      <nav aria-label="面包屑导航" class="font-mono text-[12px] tracking-[0.06em] text-muted">
+      <nav aria-label="面包屑" class="font-mono text-[12px] tracking-[0.06em] text-muted">
         <a href="/" class="transition-colors hover:text-ink">首页</a>
-        <span class="mx-2 text-line-2">/</span>
+        <span class="mx-2 text-line-2" aria-hidden="true">/</span>
         <a href="/guides" class="transition-colors hover:text-ink">指南</a>
-        <span class="mx-2 text-line-2">/</span>
+        <span class="mx-2 text-line-2" aria-hidden="true">/</span>
         <span class="text-ink-2">{eyebrow}</span>
       </nav>
 
@@ -47,21 +47,21 @@ const allGuides = [
 
       {
         route && (
-          <div
+          <ol
             class="mt-8 flex flex-wrap items-center gap-y-2 font-mono text-[12px] tracking-[0.06em] text-ink"
             aria-label="分析路径"
           >
             {route.map((step, idx) => (
-              <>
+              <li class="flex items-center">
                 <span class="border border-line-2 bg-paper-2 px-3 py-1.5">{step}</span>
                 {idx < route.length - 1 && (
                   <span class="px-2.5 text-rust" aria-hidden="true">
                     →
                   </span>
                 )}
-              </>
+              </li>
             ))}
-          </div>
+          </ol>
         )
       }
     </div>
@@ -71,7 +71,7 @@ const allGuides = [
     <div class="shell py-14 sm:py-20">
       <div class="grid gap-12 lg:grid-cols-[15.5rem_minmax(0,1fr)] lg:gap-16">
         <!-- Left sticky navigation -->
-        <aside class="lg:sticky lg:top-24 lg:self-start" aria-label="指南导航">
+        <aside class="lg:sticky lg:top-24 lg:self-start" aria-label="指南侧栏">
           <div class="space-y-8 border-b border-line pb-8 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
             <div>
               <p class="label text-muted">本页目录</p>
@@ -113,6 +113,8 @@ const allGuides = [
           <div class="guide-prose max-w-[48rem] space-y-12 text-[15.5px] leading-[1.85] text-ink-2">
             <slot />
           </div>
+
+          <p id="guide-copy-status" class="sr-only" role="status" aria-live="polite"></p>
 
           <div class="mt-16 max-w-[48rem] border-t border-line pt-8">
             <div class="flex flex-wrap items-center justify-between gap-4">
@@ -188,11 +190,17 @@ const allGuides = [
 
     const setActive = (idx: number) => {
       links.forEach((a, i) => {
-        a.classList.toggle("border-rust", i === idx);
-        a.classList.toggle("text-ink", i === idx);
-        a.classList.toggle("font-medium", i === idx);
-        a.classList.toggle("border-transparent", i !== idx);
-        a.classList.toggle("text-muted", i !== idx);
+        const active = i === idx;
+        a.classList.toggle("border-rust", active);
+        a.classList.toggle("text-ink", active);
+        a.classList.toggle("font-medium", active);
+        a.classList.toggle("border-transparent", !active);
+        a.classList.toggle("text-muted", !active);
+        if (active) {
+          a.setAttribute("aria-current", "location");
+        } else {
+          a.removeAttribute("aria-current");
+        }
       });
     };
     setActive(0);
@@ -211,6 +219,11 @@ const allGuides = [
     headings.forEach((h) => observer.observe(h));
   }
 
+  const copyStatusEl = document.getElementById("guide-copy-status");
+  const announceCopy = (msg: string) => {
+    if (copyStatusEl) copyStatusEl.textContent = msg;
+  };
+
   document.querySelectorAll<HTMLElement>(".guide-prose pre, .guide-prose [data-copy-box]").forEach((box) => {
     if (box.dataset.copyWired) return;
     box.dataset.copyWired = "1";
@@ -222,19 +235,24 @@ const allGuides = [
       const label = box.dataset.label || "";
       const bar = document.createElement("div");
       bar.className = "guide-code-bar";
-      bar.innerHTML = `<span>${label}</span>`;
+      const labelSpan = document.createElement("span");
+      labelSpan.textContent = label;
+      bar.appendChild(labelSpan);
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "guide-copy-btn";
       btn.textContent = "复制";
+      btn.setAttribute("aria-label", label ? `复制 ${label}` : "复制代码");
       btn.addEventListener("click", async () => {
         const text = box.querySelector("code")?.textContent ?? box.textContent ?? "";
         try {
           await navigator.clipboard.writeText(text.trim());
           btn.textContent = "已复制";
+          announceCopy(label ? `已复制 ${label}` : "代码已复制到剪贴板");
           setTimeout(() => (btn.textContent = "复制"), 1800);
         } catch {
           btn.textContent = "复制失败";
+          announceCopy("复制失败，请手动复制");
           setTimeout(() => (btn.textContent = "复制"), 1800);
         }
       });
@@ -246,13 +264,18 @@ const allGuides = [
       const btn = box.querySelector<HTMLButtonElement>("[data-copy-btn]");
       const target = box.querySelector<HTMLElement>("[data-copy-text]");
       if (btn && target) {
+        if (!btn.hasAttribute("aria-label")) {
+          btn.setAttribute("aria-label", "复制提示词");
+        }
         btn.addEventListener("click", async () => {
           try {
             await navigator.clipboard.writeText((target.textContent ?? "").trim());
             btn.textContent = "已复制";
+            announceCopy("提示词已复制到剪贴板");
             setTimeout(() => (btn.textContent = "复制"), 1800);
           } catch {
             btn.textContent = "复制失败";
+            announceCopy("复制失败，请手动复制");
             setTimeout(() => (btn.textContent = "复制"), 1800);
           }
         });
@@ -267,7 +290,6 @@ const allGuides = [
     font-size: clamp(1.45rem, 2.6vw, 1.9rem);
     line-height: 1.3;
     color: var(--color-ink);
-    padding-top: 0.5rem;
     border-top: 1px solid var(--color-line);
     padding-top: 2rem;
   }
@@ -346,6 +368,7 @@ const allGuides = [
   }
   .guide-prose details > summary::after {
     content: "+";
+    content: "+" / "";
     font-family: var(--font-mono);
     font-size: 15px;
     color: var(--color-muted);
@@ -353,6 +376,7 @@ const allGuides = [
   }
   .guide-prose details[open] > summary::after {
     content: "−";
+    content: "−" / "";
     color: var(--color-rust-2);
   }
   .guide-prose details > *:not(summary) {

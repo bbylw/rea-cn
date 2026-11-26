@@ -69,18 +69,21 @@ const columns = [
             <div data-reveal style={`--reveal-delay:${i * 60}ms`}>
               <h3 class="label text-panel-mute">{col.title}</h3>
               <ul class="mt-5 space-y-3">
-                {col.links.map((link) => (
-                  <li>
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="-mx-2 inline-block px-2 py-1.5 text-[13.5px] text-panel-body transition-colors duration-300 hover:text-paper"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
+                {col.links.map((link) => {
+                  const external = link.href.startsWith("http");
+                  return (
+                    <li>
+                      <a
+                        href={link.href}
+                        target={external ? "_blank" : undefined}
+                        rel={external ? "noopener noreferrer" : undefined}
+                        class="-mx-2 inline-block px-2 py-1.5 text-[13.5px] text-panel-body transition-colors duration-300 hover:text-paper"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))

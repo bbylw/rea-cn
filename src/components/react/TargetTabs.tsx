@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 interface Target {
   name: string;
@@ -274,16 +274,40 @@ const GROUPS: Group[] = [
 export default function TargetTabs() {
   const [active, setActive] = useState(GROUPS[0].id);
   const baseId = useId();
-  const group = GROUPS.find((g) => g.id === active) ?? GROUPS[0];
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const onBeforeMatch = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const panel = target.closest<HTMLElement>("[data-group-id]");
+      const groupId = panel?.dataset.groupId;
+      if (groupId) setActive(groupId);
+    };
+
+    root.addEventListener("beforematch", onBeforeMatch);
+    return () => root.removeEventListener("beforematch", onBeforeMatch);
+  }, []);
+
+  const selectGroup = (groupId: string, focusTab = false) => {
+    setActive(groupId);
+    const tabEl = document.getElementById(`${baseId}-tab-${groupId}`);
+    if (tabEl) {
+      tabEl.scrollIntoView({ block: "nearest", inline: "nearest" });
+      if (focusTab) tabEl.focus();
+    }
+  };
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.6fr)] lg:gap-16">
+    <div ref={rootRef} className="grid gap-10 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.6fr)] lg:gap-16">
       {/* Tab rail */}
       <div
         role="tablist"
         aria-label="分析目标分类"
-        aria-orientation="vertical"
-        className="flex gap-1 overflow-x-auto border-line pb-1 lg:sticky lg:top-28 lg:self-start lg:flex-col lg:gap-0 lg:overflow-visible lg:border-r lg:pb-0 lg:pr-6"
+        className="tablist-scroll flex gap-1 overflow-x-auto border-line pb-1 lg:sticky lg:top-28 lg:self-start lg:flex-col lg:gap-0 lg:overflow-visible lg:border-r lg:pb-0 lg:pr-6"
       >
         {GROUPS.map((g, i) => {
           const selected = g.id === active;
@@ -294,16 +318,22 @@ export default function TargetTabs() {
               role="tab"
               type="button"
               aria-selected={selected}
-              aria-controls={`${baseId}-panel-${g.id}`}
               tabIndex={selected ? 0 : -1}
-              onClick={() => setActive(g.id)}
+              onClick={() => selectGroup(g.id)}
               onKeyDown={(event) => {
-                if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+                let nextIdx = -1;
+                if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                  nextIdx = (i + 1) % GROUPS.length;
+                } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+                  nextIdx = (i - 1 + GROUPS.length) % GROUPS.length;
+                } else if (event.key === "Home") {
+                  nextIdx = 0;
+                } else if (event.key === "End") {
+                  nextIdx = GROUPS.length - 1;
+                }
+                if (nextIdx < 0) return;
                 event.preventDefault();
-                const dir = event.key === "ArrowDown" ? 1 : -1;
-                const next = GROUPS[(i + dir + GROUPS.length) % GROUPS.length];
-                setActive(next.id);
-                document.getElementById(`${baseId}-tab-${next.id}`)?.focus();
+                selectGroup(GROUPS[nextIdx].id, true);
               }}
               className={`group relative shrink-0 whitespace-nowrap border-b px-4 py-3.5 text-left transition-colors duration-300 lg:w-full lg:border-b-0 lg:border-l lg:px-5 lg:py-5 ${
                 selected
@@ -322,34 +352,46 @@ export default function TargetTabs() {
         })}
       </div>
 
-      {/* Panel */}
-      <div
-        role="tabpanel"
-        id={`${baseId}-panel-${group.id}`}
-        aria-labelledby={`${baseId}-tab-${group.id}`}
-        className="min-w-0"
-      >
-        <p className="caption mb-5">{group.caption}</p>
+      {/* Panels: inactive panels use hidden="until-found" so Find-in-Page reaches all 44 targets */}
+      <div className="min-w-0">
+        {GROUPS.map((g) => {
+          const isActive = g.id === active;
+          return (
+            <div
+              key={g.id}
+              role="tabpanel"
+              aria-labelledby={`${baseId}-tab-${g.id}`}
+              data-group-id={g.id}
+              tabIndex={isActive ? 0 : undefined}
+              hidden={!isActive ? ("until-found" as unknown as boolean) : undefined}
+              className="focus:outline-none"
+            >
+              <div className="min-w-0">
+                <p className="caption mb-5">{g.caption}</p>
 
-        <ul className="border-t border-line">
-          {group.targets.map((t) => (
-            <li key={t.name} className="row-lift group border-b border-line py-6">
-              <div className="grid gap-3 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.4fr)] sm:gap-8">
-                <div>
-                  <h3 className="text-[19px] text-ink transition-colors duration-300 group-hover:text-rust-2">
-                    {t.name}
-                  </h3>
-                  <p className="label mt-3">要求</p>
-                  <p className="mt-1.5 text-[13px] leading-[1.7] text-ink-2">{t.requirement}</p>
-                </div>
-                <div className="sm:border-l sm:border-line sm:pl-8">
-                  <p className="label">REA 返回</p>
-                  <p className="mt-1.5 text-[14.5px] leading-[1.75] text-ink-2">{t.output}</p>
-                </div>
+                <ul className="border-t border-line">
+                  {g.targets.map((t) => (
+                    <li key={t.name} className="row-lift group border-b border-line py-6">
+                      <div className="grid gap-3 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.4fr)] sm:gap-8">
+                        <div>
+                          <h3 className="text-[19px] text-ink transition-colors duration-300 group-hover:text-rust-2">
+                            {t.name}
+                          </h3>
+                          <p className="label mt-3">要求</p>
+                          <p className="mt-1.5 text-[13px] leading-[1.7] text-ink-2">{t.requirement}</p>
+                        </div>
+                        <div className="sm:border-l sm:border-line sm:pl-8">
+                          <p className="label">REA 返回</p>
+                          <p className="mt-1.5 text-[14.5px] leading-[1.75] text-ink-2">{t.output}</p>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </li>
-          ))}
-        </ul>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
-@media (prefers-reduced-motion: no-preference) {
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
   @view-transition {
-    navigation: auto;
+    navigation: none;
   }
 }
 
@@ -72,8 +76,33 @@
 
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
     scroll-padding-top: 6rem;
+    --scrollbar-thumb: var(--color-muted);
+    --scrollbar-track: var(--color-paper-2);
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    scrollbar-width: thin;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  @supports not (scrollbar-color: auto) {
+    html {
+      scrollbar-width: auto;
+    }
+    html::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    html::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+    }
+    html::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
   }
 
   body {
@@ -309,28 +338,34 @@
      fire. The wipe therefore lives on the child. */
 
   .js [data-reveal] {
-    opacity: 0;
-    transform: translate3d(0, 22px, 0);
-    transition: opacity 0.9s var(--ease-out-expo) var(--reveal-delay, 0ms),
-      transform 0.9s var(--ease-out-expo) var(--reveal-delay, 0ms);
-  }
-  .js [data-reveal="left"] {
-    transform: translate3d(-26px, 0, 0);
-  }
-  .js [data-reveal="wipe"] {
     opacity: 1;
     transform: none;
   }
-  .js [data-reveal="wipe"] > * {
-    clip-path: inset(0 100% 0 0);
-    transition: clip-path 1.2s var(--ease-out-expo) var(--reveal-delay, 0ms);
-  }
-  .js [data-reveal].is-in {
-    opacity: 1;
-    transform: none;
-  }
-  .js [data-reveal="wipe"].is-in > * {
-    clip-path: inset(0 0 0 0);
+  @media (prefers-reduced-motion: no-preference) {
+    .js [data-reveal] {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0);
+      transition: opacity 0.9s var(--ease-out-expo) var(--reveal-delay, 0ms),
+        transform 0.9s var(--ease-out-expo) var(--reveal-delay, 0ms);
+    }
+    .js [data-reveal="left"] {
+      transform: translate3d(-26px, 0, 0);
+    }
+    .js [data-reveal="wipe"] {
+      opacity: 1;
+      transform: none;
+    }
+    .js [data-reveal="wipe"] > * {
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.2s var(--ease-out-expo) var(--reveal-delay, 0ms);
+    }
+    .js [data-reveal].is-in {
+      opacity: 1;
+      transform: none;
+    }
+    .js [data-reveal="wipe"].is-in > * {
+      clip-path: inset(0 0 0 0);
+    }
   }
 
   /* ---------- Marquee (the page's only one) ---------- */
@@ -339,12 +374,20 @@
     mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
   }
+  .marquee {
+    contain: layout style paint;
+  }
   .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee 52s linear infinite;
   }
-  .marquee:hover .marquee-track {
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee-track {
+      animation: marquee 52s linear infinite;
+    }
+  }
+  .marquee:hover .marquee-track,
+  .marquee[data-paused="true"] .marquee-track {
     animation-play-state: paused;
   }
   @keyframes marquee {
@@ -359,10 +402,12 @@
   /* ---------- Terminal line cascade (kept: it explains a real
      command sequence, not a fabricated product UI) ---------- */
 
-  .term-line {
-    opacity: 0;
-    animation: term-in 0.5s var(--ease-out-expo) forwards;
-    animation-delay: var(--line-delay, 0ms);
+  @media (prefers-reduced-motion: no-preference) {
+    .term-line {
+      opacity: 0;
+      animation: term-in 0.5s var(--ease-out-expo) forwards;
+      animation-delay: var(--line-delay, 0ms);
+    }
   }
   @keyframes term-in {
     to {
@@ -370,21 +415,61 @@
     }
   }
 
-  /* ---------- Accordion ---------- */
+  /* ---------- Mobile navigation popover (Viewport-aware dropdown) ---------- */
 
-  .acc-panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.45s var(--ease-out-expo);
+  .mobile-nav-popover {
+    width: 220px;
+    border: 1px solid var(--color-line);
+    background: var(--color-paper);
+    padding: 0.5rem;
+    box-shadow: 0 18px 40px -28px rgba(25, 24, 19, 0.45);
   }
-  .acc-panel[data-open="true"] {
-    grid-template-rows: 1fr;
+
+  @supports (position-area: block-end) {
+    .mobile-nav-popover {
+      inset: auto;
+      margin: 0.5rem 0 0 0;
+      position-area: block-end span-inline-start;
+      position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+    }
   }
-  .acc-panel > div {
-    overflow: hidden;
+
+  @supports not (position-area: block-end) {
+    .mobile-nav-popover {
+      position: fixed;
+      inset: 4.75rem 1.25rem auto auto;
+      margin: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mobile-nav-popover {
+      transition: opacity 0.2s var(--ease-out-expo), display 0.2s allow-discrete,
+        overlay 0.2s allow-discrete;
+      opacity: 0;
+    }
+    .mobile-nav-popover:popover-open {
+      opacity: 1;
+    }
+    @starting-style {
+      .mobile-nav-popover:popover-open {
+        opacity: 0;
+      }
+    }
   }
 
   /* ---------- Tabs ---------- */
+
+  .tablist-scroll {
+    scroll-snap-type: inline proximity;
+    scrollbar-width: none;
+  }
+  .tablist-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .tablist-scroll [role="tab"] {
+    scroll-snap-align: start;
+  }
 
   /* ---------- Row + figure hover ---------- */
 
@@ -411,7 +496,7 @@
   .case-figure img {
     transition: transform 0.7s var(--ease-out-expo);
   }
-  @media (hover: hover) {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .case-figure:hover img {
       transform: scale(1.025);
     }
@@ -419,29 +504,10 @@
 
   /* ---------- Accessibility ---------- */
 
+  /* Dampen spatial movement only; keep color/background transitions intact. */
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.001ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.001ms !important;
-    }
-    .js [data-reveal] {
-      opacity: 1 !important;
-      transform: none !important;
-    }
-    .js [data-reveal="wipe"] > * {
-      clip-path: none !important;
-    }
-    .term-line {
-      opacity: 1 !important;
-    }
-    .marquee-track {
-      animation: none !important;
+    .row-lift:hover {
+      padding-left: 0;
     }
   }
 }

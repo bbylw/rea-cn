@@ -1,4 +1,6 @@
 ---
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+
 const nav = [
   { href: "/#how", label: "工作原理" },
   { href: "/#targets", label: "分析目标" },
@@ -6,9 +8,15 @@ const nav = [
   { href: "/guides", label: "指南" },
   { href: "/#rl", label: "RL 环境" },
 ];
+
+const isCurrent = (href: string) => {
+  if (href === "/guides") return currentPath === "/guides" || currentPath.startsWith("/guides/");
+  return currentPath === href;
+};
 ---
 
 <header
+  id="site-header"
   class="sticky top-0 z-50 border-b border-line bg-paper/95 backdrop-blur-xl supports-[backdrop-filter]:bg-paper/92"
 >
   <div class="shell flex h-[68px] items-center justify-between gap-6">
@@ -23,16 +31,22 @@ const nav = [
       </span>
     </a>
 
-    <nav class="hidden items-center gap-7 md:flex" aria-label="主导航">
+    <nav class="hidden items-center gap-7 md:flex" aria-label="主要">
       {
-        nav.map((item) => (
-          <a
-            href={item.href}
-            class="link-underline py-1 text-[13.5px] text-ink-2 hover:text-ink"
-          >
-            {item.label}
-          </a>
-        ))
+        nav.map((item) => {
+          const active = isCurrent(item.href);
+          return (
+            <a
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              class={`link-underline py-1 text-[13.5px] ${
+                active ? "font-medium text-ink" : "text-ink-2 hover:text-ink"
+              }`}
+            >
+              {item.label}
+            </a>
+          );
+        })
       }
     </nav>
 
@@ -46,51 +60,58 @@ const nav = [
       >
       <a href="/#start" class="btn btn-solid hidden px-4 py-2.5 sm:inline-flex">开始安装</a>
 
-      <details class="mobile-menu relative md:hidden" data-menu>
-        <summary
-          class="flex h-9 w-9 cursor-pointer list-none items-center justify-center border border-line-2 [&::-webkit-details-marker]:hidden"
-          aria-label="打开菜单"
-        >
-          <span class="flex flex-col gap-[5px]">
-            <span class="block h-px w-4 bg-ink"></span>
-            <span class="block h-px w-4 bg-ink"></span>
-            <span class="block h-px w-4 bg-ink"></span>
-          </span>
-        </summary>
-        <nav
-          class="absolute right-0 top-12 w-[220px] border border-line bg-paper p-2 shadow-[0_18px_40px_-28px_rgba(25,24,19,0.45)]"
-          aria-label="移动导航"
-        >
-          {
-            nav.map((item) => (
+      <button
+        type="button"
+        popovertarget="mobile-nav-popover"
+        class="flex min-h-9 min-w-9 cursor-pointer items-center justify-center border border-line-2 md:hidden"
+        aria-label="打开菜单"
+      >
+        <span class="flex flex-col gap-[5px]" aria-hidden="true">
+          <span class="block h-px w-4 bg-ink"></span>
+          <span class="block h-px w-4 bg-ink"></span>
+          <span class="block h-px w-4 bg-ink"></span>
+        </span>
+      </button>
+
+      <nav
+        id="mobile-nav-popover"
+        popover="auto"
+        class="mobile-nav-popover md:hidden"
+        aria-label="移动端"
+      >
+        {
+          nav.map((item) => {
+            const active = isCurrent(item.href);
+            return (
               <a
                 href={item.href}
-                class="block px-3 py-2.5 text-sm text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
+                aria-current={active ? "page" : undefined}
+                class={`block px-3 py-2.5 text-sm transition-colors hover:bg-paper-2 hover:text-ink ${
+                  active ? "font-medium text-ink" : "text-ink-2"
+                }`}
               >
                 {item.label}
               </a>
-            ))
-          }
-          <a
-            href="/#start"
-            class="mt-1 block bg-ink px-3 py-2.5 text-center font-mono text-[12px] tracking-wider text-paper"
-            >开始安装</a
-          >
-        </nav>
-      </details>
+            );
+          })
+        }
+        <a
+          href="/#start"
+          class="mt-1 block bg-ink px-3 py-2.5 text-center font-mono text-[12px] tracking-wider text-paper"
+          >开始安装</a
+        >
+      </nav>
     </div>
   </div>
 </header>
 
-<script is:inline>
-  // A <details> menu has to be dismissed explicitly once an item is picked.
-  document.addEventListener("click", (event) => {
-    const menu = event.target.closest("[data-menu]");
-    if (!menu) return;
-    if (menu.open && event.target.closest("a")) menu.open = false;
-  });
-  document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") return;
-    document.querySelectorAll("[data-menu][open]").forEach((m) => (m.open = false));
-  });
+<script>
+  const mobileNav = document.getElementById("mobile-nav-popover");
+  if (mobileNav) {
+    mobileNav.addEventListener("click", (event) => {
+      if ((event.target as Element | null)?.closest("a") && typeof mobileNav.hidePopover === "function") {
+        mobileNav.hidePopover();
+      }
+    });
+  }
 </script>

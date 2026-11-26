@@ -9,20 +9,19 @@
 
 **看到喜欢的功能，弄清它的工作原理，深入到二进制层面。**
 
-[![npm version](https://img.shields.io/npm/v/rea-agents?style=flat-square&color=cb3837)](https://www.npmjs.com/package/rea-agents)
-[![MCP tool catalog](https://img.shields.io/badge/MCP-tool_catalog-5c4ee5?style=flat-square)](https://github.com/morluto/rea/blob/main/docs/reference/mcp-contracts.md#generated-catalog)
-[![Node.js requirements](https://img.shields.io/badge/Node.js-requirements-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#current-status)
-[![skills.sh](https://skills.sh/b/morluto/rea?style=flat-square)](https://skills.sh/morluto/rea/reverse-engineer-anything)
+[![GitHub stars](https://img.shields.io/github/stars/morluto/rea?style=flat-square&logo=github)](https://github.com/morluto/rea/stargazers)
+[![Monthly npm downloads](https://img.shields.io/npm/dm/rea-agents?style=flat-square&label=npm%20downloads)](https://www.npmjs.com/package/rea-agents)
 [![MIT license](https://img.shields.io/badge/license-MIT-f4c430?style=flat-square)](https://raw.githubusercontent.com/morluto/rea/main/LICENSE)
-[![Discord](https://img.shields.io/discord/1556595354999332884?logo=discord&logoColor=white&label=Discord&color=5865F2)](https://discord.gg/GkcryMnJDM)
-
-<a href="https://trendshift.io/repositories/82054?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-82054" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/82054" alt="morluto%2Frea | Trendshift" width="250" height="55"/></a>
+[![Join the REA Discord](https://img.shields.io/badge/Discord-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/GkcryMnJDM)
+[![Follow REA on X](https://img.shields.io/badge/X-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/reatools)
+[![Supported platforms: macOS, Windows, and Linux](https://img.shields.io/badge/macOS%20%7C%20Windows%20%7C%20Linux-4493F8?style=flat-square)](https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md)
+[![skills.sh](https://skills.sh/b/morluto/rea?style=flat-square)](https://skills.sh/morluto/rea/reverse-engineer-anything)
 
 **[网站](https://rea.tools/zh-CN/) · [指南](https://rea.tools/zh-CN/guides/) · [案例](https://rea.tools/zh-CN/showcase/)**
 
 <a href="https://discord.com/invite/GkcryMnJDM"><img alt="加入 REA 的 Discord 社区" src="https://img.shields.io/badge/Join%20us%20on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" height="40"></a>
 
-[快速开始](#快速开始) · [REA 的工作原理](#rea-的工作原理) · [可以分析什么](#可以分析什么) · [案例](#案例) · [构建 RL 环境](#build-rl-environments) · [常见问题](#常见问题) · [GNU objdump 和 Rizin 工具](https://github.com/morluto/rea/blob/main/docs/reverse-engineering-tools.md) · [文档](#文档)
+[快速开始](#快速开始) · [案例](#案例) · [REA 的工作原理](#rea-的工作原理) · [可以分析什么](#可以分析什么) · [构建 RL 环境](#build-rl-environments) · [常见问题](#常见问题) · [文档](#文档)
 
 <code>npx rea-agents setup</code>
 
@@ -64,15 +63,13 @@ REA 将智能体连接到分析工具，用于检查原生二进制文件、Java
 
 设置流程会向智能体注册 REA，并安装匹配的工作流指引。原生分析可以使用已有的 Hopper、Ghidra、IDA 或 Kuna；设置流程也可以在你批准后安装 Hopper。静态 JavaScript 分析不需要原生分析引擎。
 
-> **[访问 REA 网站](https://rea.tools/zh-CN/)**，查看设置说明、图解指南和真实案例。
-
 ## 快速开始
 
-Linux 上的 Ghidra、JADX、固件工具启动和静态 JavaScript/Electron 分析需要在 REA 的 `PATH` 中提供兼容 procps 的 `ps`，用于检查进程所有权。恢复步骤见安装指南的 Linux 进程所有权前提。
+**[快速开始 · rea.tools](https://rea.tools/zh-CN/get-started/)**
 
-### 设置智能体
+### 设置智能体 (MCP)
 
-安装 Node.js 和 npm 后，运行：
+安装 [Node.js 和 npm](https://github.com/morluto/rea/blob/main/docs/reference/supported-targets.md) 后，在目标项目之外的可信目录中运行以下命令。
 
 ```bash
 npx rea-agents setup
@@ -80,15 +77,9 @@ npx rea-agents setup
 
 选择智能体，检查计划中的变更并批准。设置流程会添加 REA 的 MCP 服务和匹配的工作流指引，并备份已有配置。完成后重启智能体。
 
-设置流程支持 Claude Code、Codex、Cursor、Gemini CLI、Grok Build 和[其他智能体](https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#supported-agents)。提供方配置和手动注册 MCP 的方法见[安装与设置](https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md)。
+[安装与设置](https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md)
 
-MCP 默认使用紧凑输入 Schema 来减少上下文开销。紧凑 Schema 省略的说明会接在工具描述之后。完整工具集和规范的服务端验证保持不变；见 MCP 合约指南。
-
-设置会直接注册所选运行时和 REA 入口脚本。使用包运行器时，请保留其缓存条目和运行时，并从目标项目以外的可信目录获取包。 请参阅安装指南。
-
-默认从 `tools/list` 中省略输出 Schema：没有任何模型 API 读取它们，REA 会自行验证每个结果。在 MCP 注册中设置 `REA_MCP_OUTPUT_SCHEMA_PROFILE=compact` 可在 4096 字节内公布每个输出 Schema。所有设置下，服务端验证和结构化结果仍保持完整。 请参阅 MCP 合约指南中的“Output schemas”。
-
-### 询问智能体
+询问智能体：
 
 ```text
 弄清 Notes 应用的搜索功能如何工作，展示证据，并为我的项目实现类似功能。
@@ -96,7 +87,7 @@ MCP 默认使用紧凑输入 Schema 来减少上下文开销。紧凑 Schema 省
 
 把 Notes 替换为目标应用，并描述你想了解的功能。
 
-### 使用终端
+### 使用终端 (CLI)
 
 检查已解包的 JavaScript/Electron 应用目录或 ASAR 文件：
 
@@ -115,9 +106,9 @@ rea --help
 
 原生分析需要先配置分析提供方。原生命令、提供方选择、快照和脚本用法见 [CLI 与 Evidence 指南](https://github.com/morluto/rea/blob/main/docs/getting-started/cli.md)。
 
-### 更新 REA
+[Linux 系统要求](https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#linux-owned-process-prerequisite)
 
-REA 更新较快，新版本经常包含错误修复。请保持安装的版本为最新。
+### 更新 REA
 
 通过 `npm install --global` 或 `bun add --global` 安装的 CLI 使用：
 
@@ -125,19 +116,46 @@ REA 更新较快，新版本经常包含错误修复。请保持安装的版本�
 rea update
 ```
 
-`rea --update` 是 `rea update` 的别名，接受相同的全局输出选项。更新命令合计最多保留 4 MiB 的 stdout/stderr；命令退出后会拒绝过大的元数据响应，详细安装日志采用有界诊断。进度输出遵守终端背压并等待已提交的写入完成。
-
-Bun 全局更新需要 Bun 1.2.17 或更高版本。如果使用较旧的 Bun 版本，请先手动升级 Bun，再运行 `rea update`。
-
-要更新智能体注册和 skill，请运行更新命令输出的设置命令。
-
 如果使用 `npx`，通过以下命令更新智能体设置：
 
 ```bash
 npx rea-agents@latest setup
 ```
 
-检查设置变更并重启智能体。单次 CLI 操作可使用 `npx rea-agents@latest`，后接所需命令。使用 Bun 时，用 `bunx rea-agents@latest` 代替 `npx rea-agents@latest`。
+[更新与卸载](https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#diagnose-update-and-remove)
+
+## 案例
+
+<a href="https://rea.tools/zh-CN/showcase/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/morluto/rea/main/docs/assets/rea-showcases-dark.svg" />
+    <img alt="DX-Ball 声音平移、Notion 剪贴板桥接与 TH04 弹幕环案例的插图" src="https://raw.githubusercontent.com/morluto/rea/main/docs/assets/rea-showcases.svg" />
+  </picture>
+</a>
+
+<table>
+<tbody>
+<tr><td>
+<h3>DX-Ball：重建声像计算</h3>
+<p>沿声音调用追踪到根据位置计算声像的辅助函数，检查指令，将不完整的伪代码转为 C。重建结果通过了 3,205 个原始 x86 测试用例，并复现了编译后函数的全部 63 个字节。</p>
+<p><a href="https://rea.tools/zh-CN/showcase/dx-ball/">阅读案例</a> ·
+<a href="https://github.com/N0zoM1z0/dx-ball">重建项目仓库</a></p>
+</td></tr>
+<tr><td>
+<h3>Notion：追踪 Electron 剪贴板桥</h3>
+<p>找到渲染进程的剪贴板 API，沿 preload 和 IPC 追踪到主进程，并检查富格式剪贴板数据。</p>
+<p><a href="https://rea.tools/zh-CN/showcase/notion/">阅读案例</a></p>
+</td></tr>
+<tr><td>
+<h3>TH04：恢复 DOS 环形子弹的计算</h3>
+<p>检查原始 PC-98 游戏的 16 位指令，恢复固定角度和瞄准角度的计算，并将重建的 C++ 与当年的编译器输出进行对比。</p>
+<p><a href="https://rea.tools/zh-CN/showcase/th04/">阅读案例</a> ·
+<a href="https://github.com/N0zoM1z0/th04">重建项目仓库</a></p>
+</td></tr>
+</tbody>
+</table>
+
+如果你用 REA 分析了有趣的目标，我们很想了解。欢迎通过 [issue](https://github.com/morluto/rea/issues) 或 [pull request](https://github.com/morluto/rea/pulls) 分享案例，说明目标、你的问题、REA 如何提供帮助，以及你的发现。
 
 ## REA 的工作原理
 
@@ -151,140 +169,21 @@ npx rea-agents@latest setup
 
 ## 可以分析什么
 
-REA 需要 Node.js 22.x（>=22.23.4）、24.x（>=24.22.1）或 26+ (>=26.12.1)，以及 npm。额外工具和主机支持取决于分析目标：
+原生二进制文件 · JavaScript / Electron · 网站 · .NET 程序集 · Android APK · 固件 · 进程行为
 
-| 目标                  | REA 返回的内容                                                               | 要求与指南                                                                                                                                        |
-| --------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 原生二进制文件        | 伪代码、汇编、字符串、符号、调用和引用                                       | Hopper、Ghidra、IDA 或 Kuna；[原生分析](https://github.com/morluto/rea/blob/main/docs/guides/native/native-investigation.md)                                                                 |
-| 离线 ELF 布局         | 节、段、原始符号/重定位信息及静态防护机制候选项                              | Linux x64 上由调用方提供的 pwntools；[二进制诊断](https://github.com/morluto/rea/blob/main/docs/guides/native/binary-diagnostics.md)                                                         |
-| Go 二进制文件         | 内嵌编译器版本、模块、替换项和构建设置                                       | 内置静态 ELF/PE/thin Mach-O 检查；无需安装 Go                                                                                                     |
-| NuGet 包              | 包标识、依赖组、许可证、仓库及 ZIP 内容                                      | 内置静态 .nupkg 检查；[NuGet 包](https://github.com/morluto/rea/blob/main/docs/guides/managed/nuget-nupkg.md)                                                                                |
-| WASM 工件             | 验证、节、精确的导入/导出 WAT 形式及解码后的 WAT                             | 调用方提供的 WABT 1.0.42；`inspect_wasm_artifact`                                                                                                 |
-| EVM 字节码            | 分派选择器、字节偏移、推断的参数和状态可变性                                 | Linux x64 上的本地原始字节/十六进制输入载体；[离线 EVM 指南](https://github.com/morluto/rea/blob/main/docs/guides/evm/evm-bytecode.md)                                                       |
-| Rust binaries         | Embedded cargo-auditable dependency list                                     | [Rust binaries](https://github.com/morluto/rea/blob/main/docs/rust-binaries.md)                                                                                                              |
-| Erlang BEAM           | IFF chunks, atoms, exports, and tables                                       | Built-in static BEAM inspection; [Erlang BEAM](https://github.com/morluto/rea/blob/main/docs/erlang-beam.md)                                                                                 |
-| PE certificates       | Authenticode WIN_CERTIFICATE entries and PKCS#7 signer/X.509 identity fields | Built-in static PE inspection; [PE certificates](https://github.com/morluto/rea/blob/main/docs/pe-certificates.md)                                                                           |
-| PE imports            | Import and delay-load DLL names, ordinals, IAT RVAs and pefile import hash   | Built-in static PE inspection; [PE imports](https://github.com/morluto/rea/blob/main/docs/pe-imports.md)                                                                                     |
-| Windows shortcuts     | Shell Link target, arguments, working dir, ExtraData and Tracker droid facts | Built-in static LNK inspection; [Windows shortcuts](https://github.com/morluto/rea/blob/main/docs/guides/native/windows-shortcut.md)                                                         |
-| ELF notes             | PT_NOTE/SHT_NOTE owners, types, GNU build-id and ABI-tag fields              | Built-in static ELF inspection; [ELF notes](https://github.com/morluto/rea/blob/main/docs/elf-notes.md)                                                                                      |
-| DWARF compile units   | Compile-unit name, directory, producer, language, and dwo_name               | Built-in static ELF, Mach-O, and PE inspection; [DWARF compile units](https://github.com/morluto/rea/blob/main/docs/guides/native/dwarf-units.md)                                            |
-| ELF dependencies      | DT_NEEDED, SONAME, RPATH/RUNPATH, GNU versions, and undefined imports        | Built-in static ELF inspection; [ELF dependencies](https://github.com/morluto/rea/blob/main/docs/elf-dependencies.md)                                                                        |
-| Binary hardening      | PIE, NX, RELRO, CFG and related header flags for ELF, PE and Mach-O          | Built-in static header inspection; [binary hardening](https://github.com/morluto/rea/blob/main/docs/binary-hardening.md)                                                                     |
-| Apple IPS crashes     | .ips metadata, threads, images, registers and crash classes                  | Built-in static JSON inspection; [Apple IPS](https://github.com/morluto/rea/blob/main/docs/apple-ips.md)                                                                                     |
-| Linux kernel modules  | .modinfo keys, __versions CRCs, this_module presence, and signature trailer  | Built-in static ELF inspection; [kernel modules](https://github.com/morluto/rea/blob/main/docs/kernel-modules.md)                                                                            |
-| 已记录的 Linux 崩溃   | 原始 note 记录、每个已记录线程的寄存器/信号及可选的映射候选项                | Linux x64 上由调用方提供的 pwntools；可选的 GDB/pwndbg；[已记录崩溃](https://github.com/morluto/rea/blob/main/docs/guides/native/recorded-crashes.md)                                        |
-| 桌面安装目录          | 运行时候选、支持文件、组件标记和后续操作                                     | 有界的目录与文件头检查；[桌面应用](https://github.com/morluto/rea/blob/main/docs/desktop-applications.md)                                                                                    |
-| JavaScript / Electron | 模块、导入、source map、路由、IPC 和原生扩展关系                             | Node.js 和 npm；[应用分析](https://github.com/morluto/rea/blob/main/docs/guides/javascript/javascript-application-workflows.md); Linux: procps `ps`                                          |
-| 网站                  | 页面结构、脚本、网络观察结果和按请求获取的截图                               | Chrome 系浏览器；[浏览器分析](https://github.com/morluto/rea/blob/main/docs/guides/web/browser-observation.md)                                                                               |
-| 已保存的网络捕获      | 请求、响应、可访问的载荷和来源位置                                           | HAR / Fiddler Everywhere SAZ；原生 mitmproxy 捕获需要 Linux 上的 mitmdump；[捕获指南](https://github.com/morluto/rea/blob/main/docs/guides/web/web-network-captures.md)                      |
-| 数据包捕获            | 端点、DNS、TLS SNI、协议分布和 HTTP 请求                                     | 调用方提供的 tshark 和 capinfos （已在 Linux 验证）；[pcap 指南](https://github.com/morluto/rea/blob/main/docs/guides/data/pcap-analysis.md)                                                 |
-| .NET 程序集           | 元数据、CIL 指令、声明的原生依赖和构建对比                                   | 静态检查；[托管代码指南](https://github.com/morluto/rea/blob/main/docs/guides/managed/managed-code-analysis.md)                                                                              |
-| PyInstaller           | CArchive, PYZ, Python bytecode                                               | Static inspection; [Python packaged applications](https://github.com/morluto/rea/blob/main/docs/python-packaged-applications.md)                                                             |
-| Deno compile binaries | Virtual files, entry point, recorded options, npm snapshot length            | Static inspection; [Deno compile executables](https://github.com/morluto/rea/blob/main/docs/deno-standalone.md)                                                                              |
-| Android APK           | 清单声明、类、反编译的方法和引用                                             | Linux/macOS/Windows x64 上的无界面 JADX 和完整 JDK；[Android 指南](https://github.com/morluto/rea/blob/main/docs/guides/android/android-analysis.md)                                         |
-| Android 设备          | 设备、软件包、进程、日志、转储、屏幕截图以及 APK/文件传输                    | 调用方提供的 adb（模拟器或实体设备）；[ADB 指南](https://github.com/morluto/rea/blob/main/docs/guides/android/adb-device-analysis.md)                                                        |
-| JEB 项目              | 引擎支持的项目单元、工件摘要和类型/方法的伪代码                              | 由调用方启动、提供 MCP 的 JEB 客户端，通过 REA_JEB_MCP_URL 选择；[JEB 指南](https://github.com/morluto/rea/blob/main/docs/providers/jeb-analysis.md)                                         |
-| Android 资源          | 解码后的清单、字符串表、语言区域和版本信息                                   | 调用方提供的 Apktool 启动器；[资源指南](https://github.com/morluto/rea/blob/main/docs/guides/android/apktool-resource-analysis.md)                                                           |
-| Flutter 应用          | Dart 快照哈希、按 ABI 的库摘要及引擎构建溯源                                 | 无（静态 APK 解析）；[Flutter 指南](https://github.com/morluto/rea/blob/main/docs/guides/android/flutter-analysis.md)                                                                        |
-| 固件                  | 区域、提取结果和转交原生分析的内容                                           | Linux 上的 Binwalk / Unblob；[固件指南](https://github.com/morluto/rea/blob/main/docs/guides/firmware/firmware-analysis.md)                                                                  |
-| 抓包文件              | 指定字段、重复值、过滤条件与解码规则                                         | Linux: TShark 4.x + prlimit; [抓包分析指南](https://github.com/morluto/rea/blob/main/docs/guides/data/packet-captures.md)                                                                    |
-| 录制的逻辑信号        | 解码注释、样本范围和诊断信息                                                 | Linux: sigrok-cli 0.7.2 + prlimit; [信号记录指南](https://github.com/morluto/rea/blob/main/docs/guides/signals/signal-recordings.md)                                                         |
-| 软件包与资源          | 文件清单、摘要、plist、Apple bundle 结构和提取的资源                         | [制品与 JavaScript 指南](https://github.com/morluto/rea/blob/main/docs/guides/javascript/javascript-artifact-reconstruction.md)、[Apple 应用](https://github.com/morluto/rea/blob/main/docs/guides/apple/apple-application-analysis.md) |
-| 进程行为              | 终端输出、交互、退出和文件系统观察结果，以及运行对比                         | 支持原生 PTY 的 Linux/macOS；[进程捕获](https://github.com/morluto/rea/blob/main/docs/guides/runtime/process-capture.md)                                                                     |
-| SQLite 数据库         | 表、列、索引、视图、触发器和选定普通表的行                                   | 本地数据库/WAL 快照；Node.js 24.x >=24.15 或 26+，具有原生 SQLite 限制 API                                                                        |
-| GPU 代码对象          | CUDA/HIP 目标、选定内核参数和资源、保留的 PTX 文本                           | 内置静态检查 ELF/PE/fatbin/CUBIN/PTX; [GPU](https://github.com/morluto/rea/blob/main/docs/gpu-code-objects.md)                                                                               |
-| 模型文件              | GGUF / safetensors 元数据、张量声明和派生总量                                | 头部检查；可选完整文件哈希; [GGUF / safetensors](https://github.com/morluto/rea/blob/main/docs/model-artifacts.md)                                                                           |
-| IL2CPP 元数据         | Unity global-metadata.dat 程序集映像、类型和方法名、索引范围                 | 静态解码版本 24、27、29、31 和 39；无需 Unity                                                                                                     |
-| Godot PCK             | 归档目录与提取、原始头部和目录信息、选定内容身份                             | 静态格式 2、3 和 4；无需 Godot                                                                                                                    |
-| APK 签名              | v1/v2/v3/v3.1 签名者、证书指纹、密钥轮换和摘要自洽性                         | 内置静态检查; `inspect_apk_signature`                                                                                                             |
-
-静态 JavaScript 和 .NET 检查读取提供的文件，不运行应用。运行时捕获会以你的用户权限运行目标或与之交互；各运行时指南说明了具体影响。
+[支持的格式与运行要求](https://github.com/morluto/rea/blob/main/docs/reference/supported-targets.md)
 
 <a id="choosing-a-deep-analysis-provider"></a>
 
-大型二进制文件可通过 `REA_GHIDRA_STARTUP_TIMEOUT_MS` 或 `REA_HOPPER_STARTUP_TIMEOUT_MS` 延长提供方启动期限。
-
-不同提供方支持的原生格式和主机系统有所不同。请参阅 [Hopper 与 Ghidra 设置](https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#hopper)、[IDA 指南](https://github.com/morluto/rea/blob/main/docs/providers/ida-provider.md)、[Kuna](https://github.com/morluto/rea/blob/main/docs/kuna-provider.md)和[实验性 Windows Ghidra 支持](https://github.com/morluto/rea/blob/main/docs/providers/windows-ghidra-p0.md)。Ghidra 也支持 [16 位 DOS 分析](https://github.com/morluto/rea/blob/main/docs/providers/ghidra-dos.md)。提供方选择见 [CLI 指南](https://github.com/morluto/rea/blob/main/docs/getting-started/cli.md#choose-a-provider)。对于最新 npm 版本发布后新增的功能，请查看[发布可用性](https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#released-package-and-main)。
-
-## 案例
-
-<a href="https://rea.tools/zh-CN/showcase/">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/morluto/rea/main/docs/assets/rea-showcases-dark.svg" />
-    <img alt="DX-Ball 声音平移、Notion 剪贴板桥接与 TH04 弹幕环案例的插图" src="https://raw.githubusercontent.com/morluto/rea/main/docs/assets/rea-showcases.svg" />
-  </picture>
-</a>
-
-### DX-Ball：重建声像计算
-
-沿声音调用追踪到根据位置计算声像的辅助函数，检查指令，将不完整的伪代码转为 C。重建结果通过了 3,205 个原始 x86 测试用例，并复现了编译后函数的全部 63 个字节。
-
-[阅读案例](https://rea.tools/zh-CN/showcase/dx-ball/) ·
-[重建项目仓库](https://github.com/N0zoM1z0/dx-ball)
-
-### Notion：追踪 Electron 剪贴板桥
-
-找到渲染进程的剪贴板 API，沿 preload 和 IPC 追踪到主进程，并检查富格式剪贴板数据。
-
-[阅读案例](https://rea.tools/zh-CN/showcase/notion/)
-
-### TH04：恢复 DOS 环形子弹的计算
-
-检查原始 PC-98 游戏的 16 位指令，恢复固定角度和瞄准角度的计算，并将重建的 C++ 与当年的编译器输出进行对比。
-
-[阅读案例](https://rea.tools/zh-CN/showcase/th04/) ·
-[重建项目仓库](https://github.com/N0zoM1z0/th04)
-
-### 用 REA 构建 RL 环境
-
-录制 Web 应用会话，将 API 转为工具，并导出 AI 智能体可使用的环境。用 AgentEnv 运行，再添加任务和奖励检查，用于 RL 训练或评测。
-
-[构建环境指南](https://rea.tools/guides/rl-environments/) ·
-[在 X 上观看演示](https://x.com/reatools/status/2112574822584918075?s=20)
-
-如果你用 REA 分析了有趣的目标，我们很想了解。欢迎通过 [issue](https://github.com/morluto/rea/issues) 或 [pull request](https://github.com/morluto/rea/pulls) 分享案例，说明目标、你的问题、REA 如何提供帮助，以及你的发现。
+[选择分析引擎](https://github.com/morluto/rea/blob/main/docs/reference/supported-targets.md#choosing-a-deep-analysis-provider)
 
 <a id="build-rl-environments"></a>
 
 ## 构建 RL 环境
 
-为 AI 智能体构建本地练习环境，让它练习查找 issue、创建文件夹等任务，无需运行原应用。这个环境可用于强化学习（RL），也可用于测试智能体完成任务的能力。
+基于录制的网页会话或 Linux 桌面应用构建本地环境，让智能体练习任务并检查结果。
 
-REA 将录制的 API 请求和响应转为智能体可调用的工具。环境使用录制的数据，只有录制证据确认了某项修改的效果，才会支持该修改。
-
-在智能体中设置好 REA 后，将下面示例中的网址和文件夹任务替换为你自己的：
-
-```text
-使用 REA 为我的测试 Web 应用构建 RL 环境，网址是
-http://127.0.0.1:3000。
-覆盖列出、创建、重命名和删除文件夹。可以创建和删除测试文件夹，
-但不要修改已有数据。
-将环境保存到名为 my-env 的文件夹。检查哪些操作可用，并告诉我如何运行。
-```
-
-<details>
-<summary>改用命令行</summary>
-
-如果你已经将应用在浏览器中的请求和响应录制成文件，可以使用这些命令。运行生成的环境还需要 AgentEnv 和 Docker。
-
-```sh
-rea environment-build ./session.har ./my-env --name my-env --json
-agent-env run ./my-env
-```
-
-</details>
-
-REA 导出可直接运行的环境，并附带基本测试，检查环境能否启动和响应。将它接入 RL 框架，即可设置任务目标、添加奖励检查并运行训练。
-
-[构建环境指南](https://rea.tools/guides/rl-environments/) ·
-[环境参考文档](https://github.com/morluto/rea/blob/main/docs/agent-environments.md) ·
-[在 X 上观看演示](https://x.com/reatools/status/2112574822584918075?s=20)
-
-### 桌面应用环境
-
-REA 也能为 Linux 桌面应用构建环境，智能体通过截图、鼠标和键盘使用它。只需一行请求，例如“帮我构建一个 Gnote 环境，让智能体在购物清单笔记中加入橄榄油”，你的智能体就会在本地构建计算机上安装应用、编写任务、导出环境，并在全新的计算机上检查任务。构建环境的机器需要 amd64 或 arm64 上的 Linux、Docker，以及指南固定的 agentenv 框架版本。
-
-[设置桌面应用环境](https://github.com/morluto/rea/blob/main/docs/desktop-build-computer.md)
+[构建 RL 环境](https://rea.tools/guides/rl-environments/)
 
 ## 常见问题
 
@@ -360,15 +259,24 @@ npx rea-agents@latest setup
 - [CLI 与 Evidence](https://github.com/morluto/rea/blob/main/docs/getting-started/cli.md)：命令、提供方选择、快照、导入/导出和退出状态。
 - [MCP 契约](https://github.com/morluto/rea/blob/main/docs/reference/mcp-contracts.md)和[智能体提示词](https://github.com/morluto/rea/blob/main/docs/getting-started/mcp-prompts.md)：工具结果、会话和引导式调查。
 - [工具目录](https://github.com/morluto/rea/blob/main/docs/reference/mcp-contracts.md#generated-catalog)：构建时生成的工具、提供方和 CLI 命令清单。
-- [路线图](https://github.com/morluto/rea/blob/main/docs/development/roadmap.md)：计划中的工作和能力跟踪。
 
 请按照 [SECURITY.md](https://github.com/morluto/rea/blob/main/SECURITY.md) 报告漏洞。
+
+## 社区与支持
+
+- **Discord** — 欢迎提问、分享你的研究，加入由五万多名逆向工程爱好者和开发者组成的社区！ [![Discord](https://img.shields.io/badge/Join%20Discord-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/GkcryMnJDM)
+- **Twitter / X** — 关注 [@reatools](https://x.com/reatools) 获取更新与公告。
+- **反馈与建议** — 想要新功能或支持某种文件格式？欢迎在 [GitHub](https://github.com/morluto/rea/issues) 或 [Discord](https://discord.gg/GkcryMnJDM) 告诉我们。
 
 ## Star 历史
 
 🎉 **GitHub Star 达到 400,000 个，感谢大家！**
 
 感谢每一位使用 REA、报告错误、提出功能需求、测试构建和贡献修复的朋友。
+
+<a href="https://rea.tools/zh-CN/contributors/">
+  <img src="https://raw.githubusercontent.com/morluto/rea/main/website/public/contributors/avatars.png" alt="REA 贡献者" />
+</a>
 
 <a href="https://www.star-history.com/?repos=morluto%2Frea&amp;type=date">
   <picture>
@@ -378,6 +286,12 @@ npx rea-agents@latest setup
   </picture>
 </a>
 
+## 参与贡献
+
+欢迎帮助改进 REA！你可以[提交 issue](https://github.com/morluto/rea/issues) 报告错误或建议功能，也可以[提交 pull request](https://github.com/morluto/rea/pulls) 改进代码或文档。
+
+开发设置和检查见 [CONTRIBUTING.md](https://github.com/morluto/rea/blob/main/CONTRIBUTING.md)，验证流程见[测试指南](https://github.com/morluto/rea/blob/main/docs/development/testing.md)。
+
 ## 免责声明
 
 负责任使用的相关指引请见 [DISCLAIMER.md](https://github.com/morluto/rea/blob/main/DISCLAIMER.md)。
@@ -386,12 +300,6 @@ REA 用于合法的研究、教育、互操作性、软件保存，以及分析�
 
 本项目对非法或未经授权使用的立场涵盖所有 REA 版本、分发渠道和运行平台；
 每份副本仍适用其随附的许可。
-
-## 参与贡献
-
-欢迎帮助改进 REA！你可以[提交 issue](https://github.com/morluto/rea/issues) 报告错误或建议功能，也可以[提交 pull request](https://github.com/morluto/rea/pulls) 改进代码或文档。
-
-开发设置和检查见 [CONTRIBUTING.md](https://github.com/morluto/rea/blob/main/CONTRIBUTING.md)，验证流程见[测试指南](https://github.com/morluto/rea/blob/main/docs/development/testing.md)，项目结构见[架构图](https://raw.githubusercontent.com/morluto/rea/main/docs/architecture/architecture.mermaid)。
 
 ## 许可证
 

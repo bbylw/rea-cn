@@ -42,7 +42,7 @@ const GROUPS: Group[] = [
       {
         name: "固件",
         output: "区域、提取结果，以及转交原生分析的内容",
-        requirement: "Linux 上的 Binwalk / Unblob",
+        requirement: "内置 UEFI / NVAR；Linux 上外部 Binwalk / Unblob",
       },
     ],
   },
@@ -58,12 +58,12 @@ const GROUPS: Group[] = [
       },
       {
         name: "Rust 二进制文件",
-        output: "内嵌的 cargo-auditable 依赖清单",
-        requirement: "内置静态检查",
+        output: "内嵌的 cargo-auditable crate 名称、版本、来源与依赖边",
+        requirement: "内置静态 ELF / PE / thin Mach-O / WebAssembly 模块检查",
       },
       {
         name: "Erlang BEAM",
-        output: "IFF 块、原子、导出和表",
+        output: "IFF 块、原子、导出、导入、lambda 与 Code 头",
         requirement: "内置静态 BEAM 检查",
       },
       {
@@ -118,23 +118,33 @@ const GROUPS: Group[] = [
       },
       {
         name: "GPU 代码对象",
-        output: "CUDA / HIP 目标、选定内核参数和资源、保留的 PTX 文本",
+        output: "CUDA / HIP / AMDGPU 目标与 ABI、内核与 AMD PAL 管线声明、保留的 PTX 文本",
         requirement: "内置静态 ELF / PE / fatbin / CUBIN / PTX 检查",
+      },
+      {
+        name: "GPU 资源头",
+        output: "DDS（含 DX10）、GLB、KTX 与 KTX2 头部字段及声明区域；不解码载荷",
+        requirement: "内置静态头部解析",
       },
       {
         name: "模型文件",
         output: "GGUF / safetensors 元数据、张量声明和派生总量",
-        requirement: "头部检查；可选完整文件哈希",
+        requirement: "内置头部检查；可选完整文件哈希",
       },
       {
         name: "IL2CPP 元数据",
         output: "Unity global-metadata.dat 程序集映像、类型和方法名、索引范围",
-        requirement: "静态解码版本 24、27、29、31 和 39；无需 Unity",
+        requirement: "内置静态解码版本 24、27、29、31 和 39；无需 Unity",
       },
       {
         name: "Godot PCK",
         output: "归档目录与提取、原始头部和目录信息、选定内容身份",
-        requirement: "静态格式 2、3 和 4；无需 Godot",
+        requirement: "内置静态格式 2、3 和 4；无需 Godot",
+      },
+      {
+        name: "tar 归档",
+        output: "存储与 gzip 压缩 tar 的成员清单和提取，包括 .unitypackage",
+        requirement: "内置静态 ustar、pax 和 GNU 头部检查",
       },
       {
         name: "NuGet 包",
@@ -143,7 +153,7 @@ const GROUPS: Group[] = [
       },
       {
         name: "PyInstaller",
-        output: "CArchive、PYZ 和 Python 字节码",
+        output: "CArchive 成员、Python 版本、入口脚本与提取的字节码",
         requirement: "静态检查",
       },
       {
@@ -154,7 +164,7 @@ const GROUPS: Group[] = [
       {
         name: "SQLite 数据库",
         output: "表、列、索引、视图、触发器和选定普通表的行",
-        requirement: "本地数据库 / WAL 快照；Node.js 24.x（≥24.15）或 26+",
+        requirement: "本地数据库 / WAL 快照；Node.js 24.x 或 26.x（不支持 22.x）",
       },
       {
         name: "桌面安装目录",
@@ -170,7 +180,7 @@ const GROUPS: Group[] = [
     targets: [
       {
         name: "JavaScript / Electron",
-        output: "模块、导入、source map、路由、IPC 和原生扩展关系",
+        output: "模块、导入、source map、路由、IPC、原生扩展关系与 rea audit-release-exposure",
         requirement: "Node.js 和 npm；Linux 上需要兼容 procps 的 ps",
       },
       {
@@ -240,7 +250,7 @@ const GROUPS: Group[] = [
       {
         name: "数据包捕获",
         output: "端点、DNS、TLS SNI、协议分布和 HTTP 请求",
-        requirement: "调用方提供的 tshark 和 capinfos（已在 Linux 验证）",
+        requirement: "调用方提供的 tshark 和 capinfos（Linux 需 prlimit，或 Windows）",
       },
       {
         name: "抓包文件",

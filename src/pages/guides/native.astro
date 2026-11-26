@@ -1,0 +1,172 @@
+---
+import GuideLayout from "../../components/GuideLayout.astro";
+---
+
+<GuideLayout
+  title="原生二进制分析指南"
+  description="通过 DX-Ball 声像定位计算实例，学习如何用 REA 检查原生指令、追踪调用方、解码数据常量并还原 C 代码。"
+  eyebrow="原生二进制"
+  heading="还原 DX-Ball 的声像定位计算"
+  lead="检查原始指令，识别输入参数与数字常量，然后核验还原出的 C 代码。"
+  route={["指令", "调用方", "常量", "C 函数"]}
+  prev={{ label: "设置 REA", href: "/guides/get-started" }}
+  next={{ label: "JavaScript & Electron 指南", href: "/guides/javascript" }}
+  upstreamUrl="https://rea.tools/guides/native/"
+>
+  <section class="space-y-4">
+    <h2>计算左右声道的声像定位</h2>
+    <p>
+      在 DX-Ball 中，砖块被击中时会传入一个水平屏幕坐标，音频代码会将其转换为左右声道的声像偏移（panning）值。
+    </p>
+    <p>
+      起始函数 <code>0x00406400</code> 的反编译伪代码非常简短，只看到一次对 <code>__ftol()</code>
+      的调用。但 REA 同时返回了它的汇编指令和调用方信息，让编程助手能够补全缺失的算术过程。
+    </p>
+
+    <details class="border border-line bg-paper-2 px-5 py-4">
+      <summary class="cursor-pointer font-medium text-ink">初次接触这些术语？</summary>
+      <ul class="mt-3 space-y-1.5 text-[14px]">
+        <li><strong>指令（Instructions）：</strong>处理器执行的步骤，以 <code>MOV</code>、<code>ADD</code> 等可读形式展示。</li>
+        <li><strong>反编译结果 / 伪代码：</strong>分析工具尝试将指令还原为类 C 代码的结果，有时会遗漏部分逻辑（如本例）。</li>
+        <li><strong>调用方（Caller）：</strong>调用当前函数的上级函数，可用于确认传入参数的含义。</li>
+        <li><strong>地址（Address）：</strong>程序中的位置，以十六进制表示，例如 <code>0x00406400</code>。</li>
+        <li><strong>常量（Constants）：</strong>存储在程序数据段中的固定数值，按原始字节读取并解码。</li>
+      </ul>
+    </details>
+
+    <div class="border border-line-2 bg-paper-2 p-5">
+      <p class="label text-ink">三项证据，拼出完整计算</p>
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        <div class="border border-line bg-paper p-4">
+          <p class="font-mono text-[11px] tracking-[0.12em] text-rust-2">01 · 指令</p>
+          <p class="mt-1.5 font-medium text-ink">整数输入</p>
+          <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+            栈读取指令为浮点运算提供输入值。
+          </p>
+        </div>
+        <div class="border border-line bg-paper p-4">
+          <p class="font-mono text-[11px] tracking-[0.12em] text-rust-2">02 · 调用方</p>
+          <p class="mt-1.5 font-medium text-ink">屏幕坐标</p>
+          <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+            砖块碰撞调用方传入 <code>20 + 30 × tile_x</code>。
+          </p>
+        </div>
+        <div class="border border-line bg-paper p-4">
+          <p class="font-mono text-[11px] tracking-[0.12em] text-rust-2">03 · 数据字节</p>
+          <p class="mt-1.5 font-medium text-ink">数字常量</p>
+          <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+            引用字节解码为 <code>1.5625</code>、<code>500.0</code> 与缩放系数。
+          </p>
+        </div>
+      </div>
+      <p class="mt-4 border-t border-line pt-3 font-mono text-[13.5px] text-ink">
+        pan = (x × 1.5625 − 500.0) × scale
+      </p>
+      <p class="mt-1.5 text-[13.5px] text-muted">
+        REA 负责提供指令、调用关系与原始字节；编程助手将三者结合起来完成推理。
+      </p>
+    </div>
+  </section>
+
+  <section class="space-y-4">
+    <h2>向编程助手提问</h2>
+    <p>
+      先<a href="/guides/get-started#agent">将 REA 连接到你的编程助手</a>并<a href="/guides/get-started#native">配置原生分析引擎</a>，然后提供本地可执行文件路径与问题：
+    </p>
+
+    <details class="border border-line bg-paper-2 px-5 py-4">
+      <summary class="cursor-pointer font-medium text-ink">我应该选择哪个原生分析工具？</summary>
+      <ul class="mt-3 space-y-1.5 text-[14px]">
+        <li><strong>Hopper（macOS / Linux x86_64）：</strong><code>rea-agents setup</code> 会自动检测或提供安装计划；macOS 首次使用前需手动打开一次选择演示模式或激活许可。Linux arm64 请改用 Ghidra。</li>
+        <li><strong>Ghidra（macOS / Linux；Windows 实验性）：</strong>免费开源，需已有 Ghidra 12.2 与 64 位 JDK 25+。</li>
+        <li><strong>IDA（Windows；macOS arm64 无头模式）：</strong>接入已有的 IDA 与 MCP 配置。</li>
+      </ul>
+    </details>
+
+    <div data-copy-box class="border border-line-2 bg-paper-2">
+      <div class="flex items-center justify-between border-b border-line px-4 py-2">
+        <span class="label text-rust-2">你的编程助手 · 示例提示词</span>
+        <button
+          type="button"
+          data-copy-btn
+          class="cursor-pointer border border-line-2 px-2.5 py-0.5 font-mono text-[11px] text-ink transition-colors hover:border-rust hover:text-rust-2"
+        >
+          复制
+        </button>
+      </div>
+      <p data-copy-text class="p-4 font-mono text-[13.5px] leading-[1.7] text-ink">
+        使用 REA 找出 DX-Ball 如何计算声音的左右声像（sound panning）。解释计算过程并展示还原后的代码。
+      </p>
+    </div>
+    <p class="text-[14px] text-muted">
+      提示：请向助手提供你本地 DX-Ball 1.07 可执行文件的完整路径（REA 不包含游戏文件），或用同样的方式询问你手头的其他小型 Windows 程序。
+    </p>
+
+    <details class="border border-line bg-paper-2 px-5 py-4">
+      <summary class="cursor-pointer font-medium text-ink">如何获取文件的完整路径？</summary>
+      <ul class="mt-3 space-y-1.5 text-[14px]">
+        <li><strong>Windows：</strong>在文件资源管理器中右键点击文件，选择<em>「复制文件地址」</em>（Windows 10 按住 Shift 右键）。</li>
+        <li><strong>macOS：</strong>在访达中右键点击文件，按住 Option 键并选择<em>「将“…”拷贝为路径名称」</em>。</li>
+        <li><strong>通用方法：</strong>将文件拖进终端窗口即可显示完整路径。</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="space-y-4">
+    <h2>解读 REA 返回的证据</h2>
+
+    <h3>1. 读取输入参数（0x406409）</h3>
+    <pre data-label="REA 指令摘录 · 0x406409"><code>MOV EAX, dword ptr [EBP + 0x8]
+MOV dword ptr [EBP + -0xc], EAX
+FILD dword ptr [EBP + -0xc]</code></pre>
+    <p>
+      这组指令从栈上加载一个整数参数，并将其转换为浮点数参与后续运算——这正是最初反编译伪代码中缺失的输入。
+    </p>
+
+    <h3>2. 追踪调用方（0x411f5b）</h3>
+    <pre data-label="REA 调用方摘录 · 0x411f5b"><code>ADD EAX, 0x14
+PUSH EAX
+CALL 0x00406400</code></pre>
+    <p>
+      REA 定位到砖块碰撞的调用方。前面的指令先将砖块列索引乘以 30，再加上 <code>0x14</code>（20），得到砖块的屏幕横坐标。
+    </p>
+
+    <h3>3. 解码引用的浮点常量</h3>
+    <pre data-label="REA 字节结果 · 小端序双精度浮点数"><code>0x420068  000000000000f93f  → 1.5625
+0x420070  0000000000407f40  → 500.0
+0x4210a0  000000000000f03f  → 1.0</code></pre>
+    <p>
+      算术指令引用了上述内存地址。按小端序双精度浮点数解码后即可得到精确常量，再结合指令顺序就能确认它们的运算方式。
+    </p>
+  </section>
+
+  <section class="space-y-4">
+    <h2>编写并核验还原后的函数</h2>
+    <pre data-label="还原后的 C · 摘录"><code>pan = (double)x;
+pan = pan * 1.5625;
+pan = pan - 500.0;
+pan = pan * dxball_pan_scale;
+return (DxBallInt)pan;</code></pre>
+    <p>
+      当缩放系数为 <code>1.0</code> 时，屏幕横坐标 <code>0</code>、<code>320</code>、<code>640</code> 在取整前分别映射到
+      <code>-500</code>、<code>0</code> 和 <code>500</code>，正好将屏幕中心对齐到立体声声场中央。
+    </p>
+    <p>
+      独立验证将 <strong>3,205 组输入</strong>与原始 x86 函数逐一比对全部通过，并逐字节复现了编译后函数的全部
+      <strong>63 个字节</strong>。可前往<a href="/cases">实战案例</a>查看完整对比。
+    </p>
+  </section>
+
+  <section class="space-y-4">
+    <h2>用你自己的二进制文件试试</h2>
+    <p>
+      <a href="/guides/get-started#native">配置好原生分析提供方</a>后，把本地可执行文件或动态库交给助手，从「这个文件是如何解析的？」或「哪个函数处理了这个菜单操作？」开始提问。
+    </p>
+    <p>如果你已经知道目标函数名或地址，也可以直接从终端查询（以已配置的 Ghidra 为例）：</p>
+    <pre data-label="函数分析 · CLI"><code>npx -y rea-agents@latest function /absolute/path/to/program main \
+  --provider ghidra --json</code></pre>
+    <p>
+      每次 CLI 调用都会导入分析并关闭会话；而在编程助手的 MCP 会话中，多次查询会复用已导入的二进制文件。把伪代码与汇编指令、交叉引用对照阅读，遇到未解析的调用或数值时，就以该地址作为下一个追问点。
+    </p>
+  </section>
+</GuideLayout>

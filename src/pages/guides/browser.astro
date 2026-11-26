@@ -1,0 +1,150 @@
+---
+import GuideLayout from "../../components/GuideLayout.astro";
+---
+
+<GuideLayout
+  title="浏览器观察指南"
+  description="通过在线 Notes 浏览器示例，把一次点击、捕获到的网络请求和生成下载文件的 JavaScript 关联起来。"
+  eyebrow="浏览器行为"
+  heading="观察一次点击背后发生了什么"
+  lead="用一个小型浏览器应用，把用户点击、对应的网络请求，以及生成下载文件的 JavaScript 联系起来。"
+  route={["你的点击", "捕获的请求", "导出脚本"]}
+  prev={{ label: "JavaScript & Electron 指南", href: "/guides/javascript" }}
+  next={{ label: "构建 RL 环境指南", href: "/guides/rl-environments" }}
+  upstreamUrl="https://rea.tools/zh-CN/guides/browser/"
+>
+  <section class="space-y-4">
+    <h2>点击导出时会发生什么？</h2>
+    <p>
+      <a href="https://rea.tools/examples/notes-web/" target="_blank" rel="noopener noreferrer">Notes 浏览器示例</a>
+      有一个 <strong>Export notes（导出笔记）</strong> 按钮。点击后会请求 <code>notes.json</code>，把笔记格式化为 CSV 并触发浏览器下载。
+    </p>
+    <div class="border border-line-2 bg-paper-2 p-5">
+      <p class="label text-ink">从点击到 CSV 下载</p>
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        <div class="border border-line bg-paper p-4">
+          <p class="font-mono text-[11px] tracking-[0.12em] text-rust-2">01 · 你</p>
+          <p class="mt-1.5 font-medium text-ink">点击 Export notes</p>
+          <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+            在捕获窗口开启后，用浏览器执行操作。
+          </p>
+        </div>
+        <div class="border border-line bg-paper p-4">
+          <p class="font-mono text-[11px] tracking-[0.12em] text-rust-2">02 · REA</p>
+          <p class="mt-1.5 font-medium text-ink">记录请求</p>
+          <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+            从所选页面捕获请求 URL、响应状态和 JSON 结构。
+          </p>
+        </div>
+        <div class="border border-line bg-paper p-4">
+          <p class="font-mono text-[11px] tracking-[0.12em] text-rust-2">03 · 编程助手</p>
+          <p class="mt-1.5 font-medium text-ink">读取导出代码</p>
+          <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+            将观察到的请求与 <code>export.js</code> 中的 <code>fetch("./notes.json")</code> 关联起来。
+          </p>
+        </div>
+      </div>
+      <p class="mt-4 border-t border-line pt-3 font-mono text-[13.5px] text-ink">
+        GET notes.json → 200 → notes[] → CSV
+      </p>
+    </div>
+  </section>
+
+  <section class="space-y-4">
+    <h2>以远程调试方式启动 Chrome</h2>
+    <p>用独立的浏览器配置与本地调试端口打开在线 Notes 示例（Linux 示例）：</p>
+    <pre data-label="启动示例浏览器 · Linux"><code>google-chrome \
+  --remote-debugging-port=9222 \
+  --user-data-dir=/tmp/rea-notes-browser \
+  https://rea.tools/examples/notes-web/</code></pre>
+    <p>
+      在 macOS 或 Windows 上替换为本机 Chrome 可执行文件路径即可。REA 会连接到这个已有浏览器窗口，你始终掌控页面操作，完成后关闭浏览器即可。
+    </p>
+  </section>
+
+  <section class="space-y-4">
+    <h2>让编程助手观察操作</h2>
+    <div data-copy-box class="border border-line-2 bg-paper-2">
+      <div class="flex items-center justify-between border-b border-line px-4 py-2">
+        <span class="label text-rust-2">你的编程助手 · 示例提示词</span>
+        <button
+          type="button"
+          data-copy-btn
+          class="cursor-pointer border border-line-2 px-2.5 py-0.5 font-mono text-[11px] text-ink transition-colors hover:border-rust hover:text-rust-2"
+        >
+          复制
+        </button>
+      </div>
+      <p data-copy-text class="p-4 font-mono text-[13.5px] leading-[1.7] text-ink">
+        用 REA 检查这个页面（调试地址 http://127.0.0.1:9222）。我点击 Export notes 时，它发起了什么请求？CSV 是怎样生成的？
+      </p>
+    </div>
+    <p>等助手开始捕获后，再点击页面上的按钮。助手会发现页面目标、启动观察窗口、读取采集到的证据，并检查导出功能对应的脚本。</p>
+  </section>
+
+  <section class="space-y-4">
+    <h2>或在终端中直接捕获</h2>
+    <p>先列出当前浏览器中的页面目标 ID：</p>
+    <pre data-label="查找页面目标"><code>npx -y rea-agents@latest list-browser-targets \
+  http://127.0.0.1:9222 --json</code></pre>
+    <p>找到 Notes 示例对应的 <code>TARGET_ID</code>，开启 10 秒观察窗口并点击 <strong>Export notes</strong>：</p>
+    <pre data-label="捕获接下来 10 秒"><code>npx -y rea-agents@latest inspect-web-page \
+  http://127.0.0.1:9222 TARGET_ID \
+  --observation-ms 10000 \
+  --include-accessibility-text \
+  --include-json-body-shapes --json</code></pre>
+  </section>
+
+  <section class="space-y-4">
+    <h2>读取请求证据与导出脚本</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>捕获的事实</th>
+          <th>值</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>请求</td>
+          <td><code>GET /examples/notes-web/notes.json</code></td>
+        </tr>
+        <tr>
+          <td>响应</td>
+          <td><code>200 · application/json</code></td>
+        </tr>
+        <tr>
+          <td>请求发起方</td>
+          <td><code>export.js</code> · 脚本</td>
+        </tr>
+        <tr>
+          <td>响应结构</td>
+          <td><code>notes[]</code>，包含 <code>id</code> 和 <code>title</code> 字段</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>接着读取页面加载的脚本源码：</p>
+    <pre data-label="读取加载的脚本"><code>npx -y rea-agents@latest inspect-web-page \
+  http://127.0.0.1:9222 TARGET_ID \
+  --include-script-sources --json</code></pre>
+    <pre data-label="export.js · 示例源码摘录"><code>const response = await fetch("./notes.json");
+const &#123; notes &#125; = await response.json();
+// Format each note as a CSV row.
+const url = URL.createObjectURL(new Blob([csv], &#123; type: "text/csv" &#125;));
+link.href = url;
+link.download = "notes.csv";
+link.click();</code></pre>
+    <p>
+      <a href="https://rea.tools/examples/notes-web/" target="_blank" rel="noopener noreferrer">打开示例</a> ·
+      <a href="https://rea.tools/examples/notes-web/export.js" target="_blank" rel="noopener noreferrer">下载 export.js</a> ·
+      <a href="https://rea.tools/examples/notes-web/notes.json" target="_blank" rel="noopener noreferrer">下载 notes.json</a>
+    </p>
+    <blockquote>
+      进阶追问：找出请求 <code>notes.json</code> 的脚本。它如何转义包含逗号或引号的标题？
+    </blockquote>
+    <p>
+      对于已安装的 JavaScript 或 Electron 应用，请继续使用<a href="/guides/javascript">应用分析流程</a>追踪文件与进程边界。如需检查完整 HTTP 请求与响应正文，请参阅
+      <a href="https://github.com/morluto/rea/blob/main/docs/guides/web/web-network-captures.md" target="_blank" rel="noopener noreferrer">Fiddler Everywhere：SAZ 捕获、MCP 与公开技能</a>，导出 SAZ 或 HAR 1.2 交给 REA 离线分析。
+    </p>
+  </section>
+</GuideLayout>

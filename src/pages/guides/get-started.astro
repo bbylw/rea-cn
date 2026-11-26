@@ -1,0 +1,456 @@
+---
+import GuideLayout from "../../components/GuideLayout.astro";
+
+const clients = [
+  ["Claude Code", "claude_code"],
+  ["Claude Desktop", "claude_desktop"],
+  ["Codex", "codex"],
+  ["Cursor", "cursor"],
+  ["Gemini CLI", "gemini_cli"],
+  ["Windsurf", "windsurf"],
+  ["Devin", "devin"],
+  ["OpenCode", "opencode"],
+  ["Antigravity", "antigravity"],
+  ["GitHub Copilot CLI", "copilot_cli"],
+  ["Command Code", "commandcode"],
+  ["Qwen Code", "qwen_code"],
+  ["Kimi Code", "kimi"],
+  ["VS Code", "vscode"],
+  ["Grok Build", "grok_build"],
+  ["OMP", "omp"],
+  ["Pi", "pi"],
+  ["Hermes", "hermes"],
+  ["Qoder", "qoder"],
+  ["Factory Droid", "droid"],
+  ["Trae", "trae"],
+  ["WorkBuddy", "workbuddy"],
+  ["ZCode", "zcode"],
+  ["DeepSeek Harness", "dsh"],
+  ["FreeBuff", "freebuff"],
+];
+
+const otherTargets = [
+  ["JavaScript / Electron", "Node.js + npm", "打开指南", "/guides/javascript", false],
+  ["网站", "Chrome / Chromium / Edge", "打开指南", "/guides/browser", false],
+  [".NET / Flutter / 软件包", "Node.js + npm", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/managed/managed-code-analysis.md", true],
+  ["Android APK", "JADX + JDK 17+", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/android/android-analysis.md", true],
+  ["Android 设备", "adb", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/android/adb-device-analysis.md", true],
+  ["Android 资源", "Apktool + Java", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/android/apktool-resource-analysis.md", true],
+  ["JEB 项目", "JEB + MCP", "打开指南", "https://github.com/morluto/rea/blob/main/docs/providers/jeb-analysis.md", true],
+  ["固件", "内置 UEFI/NVAR · Linux Binwalk/Unblob", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/firmware/firmware-analysis.md", true],
+  ["WASM", "WABT", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/wasm/wasm-artifacts.md", true],
+  ["SQLite 数据库", "Node.js 24.x / 26+", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/data/sqlite-databases.md", true],
+  ["EVM 字节码", "Node.js · Linux x64", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/evm/evm-bytecode.md", true],
+  ["ELF / Linux 崩溃", "pwntools / GDB / pwndbg", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/native/recorded-crashes.md", true],
+  ["HAR / SAZ / mitmproxy", "Node.js / mitmdump", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/web/web-network-captures.md", true],
+  ["PCAP / PCAPNG", "TShark / capinfos · Linux / Windows", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/data/packet-captures.md", true],
+  ["逻辑信号", "sigrok-cli · Linux", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/signals/signal-recordings.md", true],
+  ["进程行为", "PTY · Linux / macOS", "打开指南", "https://github.com/morluto/rea/blob/main/docs/guides/runtime/process-capture.md", true],
+] as const;
+---
+
+<GuideLayout
+  title="设置 REA"
+  description="准备电脑环境、选择编程助手、连接 REA、尝试第一次调查，以及配置原生分析引擎与终端 CLI。"
+  eyebrow="第一次调查"
+  heading="设置 REA"
+  lead="准备好本机环境与编程助手，连接 REA，然后分析一个小型应用。初次接触请按以下四步操作；如果已经装好编程助手，可直接跳至第 3 步「连接 REA」。"
+  route={["1. 准备电脑", "2. 选择编程助手", "3. 连接 REA", "4. 首次调查"]}
+  next={{ label: "原生分析指南", href: "/guides/native" }}
+  upstreamUrl="https://rea.tools/get-started/"
+>
+  <section id="prepare" class="space-y-4">
+    <h2>1. 准备你的电脑</h2>
+    <p>
+      在存放目标文件的电脑上操作。本地编程助手可以读取这些文件并为你运行工具。终端命令在命令行窗口中执行，标注为「你的编程助手」的提示词则输入到助手的对话窗口中。
+    </p>
+    <p>
+      你需要安装 <strong>Node.js 22.x（≥22.23.4）</strong>、<strong>24.x（≥24.22.1）</strong> 或
+      <strong>26+（≥26.12.1）</strong>。<code>npm</code> 随 Node.js 一同安装。
+    </p>
+
+    <details>
+      <summary>如何打开终端？</summary>
+      <ul class="space-y-1.5 text-[14.5px]">
+        <li><strong>Windows：</strong>打开开始菜单，输入 <em>PowerShell</em> 并按回车。</li>
+        <li><strong>macOS：</strong>按 <code>⌘ Space</code>，输入 <em>Terminal</em> 并按回车。</li>
+        <li><strong>Linux：</strong>大多数桌面环境按 <code>Ctrl Alt T</code>。</li>
+      </ul>
+      <p class="text-[14px] text-muted">
+        粘贴命令：Windows 用 <code>Ctrl V</code>，macOS 用 <code>⌘ V</code>，Linux 终端用 <code>Ctrl Shift V</code>，然后按回车执行。
+      </p>
+    </details>
+
+    <details>
+      <summary>没有 Node.js，或不确定当前版本？</summary>
+      <p>打开终端检查版本：</p>
+      <pre data-label="终端"><code>node -v
+npm -v</code></pre>
+      <p>
+        如果 <code>node -v</code> 输出 <code>v22.23.4+</code>、<code>v24.22.1+</code> 或 <code>v26.12.1+</code>，说明已就绪；如果版本过旧或提示未找到命令，请按系统安装 Node.js 24 LTS：
+      </p>
+
+      <details>
+        <summary>Windows（PowerShell）</summary>
+        <pre data-label="Windows PowerShell"><code>winget install --exact --id OpenJS.NodeJS.LTS</code></pre>
+        <p class="text-[14px]">
+          若提示接受条款请输入 <code>Y</code>。关闭并重开 PowerShell 后运行 <code>node -v</code>。如 <code>winget</code> 不可用，请从 <a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">nodejs.org</a> 下载安装包。若 PowerShell 提示<em>「禁止运行脚本」</em>，请改用 <code>npx.cmd</code> 和 <code>npm.cmd</code>：
+        </p>
+        <pre data-label="Windows PowerShell"><code>npx.cmd rea-agents@latest setup</code></pre>
+      </details>
+
+      <details>
+        <summary>macOS</summary>
+        <p class="text-[14px]">
+          首次安装建议下载 <a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">Node.js 24 LTS macOS 安装包（.pkg）</a> 并重开终端。如果已安装 Homebrew：
+        </p>
+        <pre data-label="macOS · Homebrew"><code>brew install node</code></pre>
+      </details>
+
+      <details>
+        <summary>Linux</summary>
+        <p class="text-[14px]">
+          缺少 <code>curl</code> 或 <code>unzip</code> 时先安装（Debian/Ubuntu：<code>sudo apt install curl unzip</code>），再用 <code>fnm</code> 安装 Node.js 24：
+        </p>
+        <pre data-label="Linux"><code>curl -fsSL https://fnm.vercel.app/install | bash</code></pre>
+        <p class="text-[14px]">关闭并重开终端后执行：</p>
+        <pre data-label="Linux"><code>fnm install 24
+fnm use 24
+fnm default 24</code></pre>
+        <p class="text-[13.5px] text-muted">
+          注：Linux 发行版自带的 <code>nodejs</code> 通常低于 22.23.4，如使用请用 <code>node -v</code> 确认。
+        </p>
+      </details>
+    </details>
+
+    <details>
+      <summary>为你的编程助手创建工作目录</summary>
+      <p>在终端中创建一个练习文件夹并进入（如已有工作目录，直接打开即可）：</p>
+      <pre data-label="终端"><code>mkdir rea-work
+cd rea-work</code></pre>
+    </details>
+  </section>
+
+  <section id="choose-agent" class="space-y-4">
+    <h2>2. 选择编程助手</h2>
+    <p>编程助手是你对话的 AI，REA 为它提供逆向检查工具。点击下方任一客户端展开安装说明：</p>
+
+    <details>
+      <summary>Codex · 使用 ChatGPT 账号</summary>
+      <pre data-label="Windows PowerShell"><code>powershell -ExecutionPolicy ByPass -c "irm https://chatgpt.com/codex/install.ps1 | iex"</code></pre>
+      <pre data-label="macOS / Linux"><code>curl -fsSL https://chatgpt.com/codex/install.sh | sh</code></pre>
+      <p>安装后重开终端，回到工作目录运行 <code>codex</code>，选择「Sign in with ChatGPT」完成浏览器登录后进入第 3 步。</p>
+    </details>
+
+    <details>
+      <summary>Cursor、Windsurf 或 VS Code · 使用编辑器</summary>
+      <ol class="text-[14.5px]">
+        <li>安装对应操作系统的编辑器并登录账号。</li>
+        <li>打开第 1 步创建的 <code>rea-work</code> 文件夹。</li>
+        <li>打开 AI 聊天面板并切换到 Agent 模式（VS Code 需先配置 GitHub Copilot）。</li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>Claude Code · 使用 Claude 账号</summary>
+      <pre data-label="Windows PowerShell"><code>irm https://claude.ai/install.ps1 | iex</code></pre>
+      <pre data-label="macOS / Linux"><code>curl -fsSL https://claude.ai/install.sh | bash</code></pre>
+      <p>重开终端回到工作目录运行 <code>claude</code>，按提示登录（需有效的 Claude 订阅或已配置的 API 账号）。</p>
+    </details>
+
+    <details>
+      <summary>Claude Desktop · 使用桌面聊天客户端</summary>
+      <p>安装并登录 Claude Desktop 后，<strong>完全退出</strong>它，在外部终端执行：</p>
+      <pre data-label="终端"><code>npx rea-agents@latest setup --client claude_desktop</code></pre>
+      <p>检查并批准配置计划，重新打开 Claude Desktop，然后前往第 3 步<a href="#check-connection">验证连接</a>。</p>
+    </details>
+
+    <details>
+      <summary>OpenCode · 自选 AI 模型</summary>
+      <pre data-label="终端"><code>npm install --global opencode-ai</code></pre>
+      <p>在工作目录运行 <code>opencode</code>，在对话中使用 <code>/connect</code> 绑定模型账号并选择模型。</p>
+    </details>
+
+    <details>
+      <summary>Grok Bot · 连接托管环境</summary>
+      <p>在 Grok Bot 对话中要求它添加一个名为 <code>rea</code> 的自定义 MCP 服务器，命令为：</p>
+      <pre data-label="Grok Bot"><code>npx -y rea-agents@6.4.0 mcp</code></pre>
+    </details>
+
+    <details>
+      <summary>全部 25 个受支持客户端与 Setup ID</summary>
+      <p class="text-[14px] text-muted">
+        显式指定客户端时使用 <code>--client &lt;Setup ID&gt;</code>。以下列表适用于 npm 6.8.0 及以上版本（<code>droid</code>、<code>dsh</code>、<code>kimi</code>、<code>qoder</code>、<code>trae</code>、<code>workbuddy</code>、<code>zcode</code> 需 6.5.0+；<code>freebuff</code> 需 6.8.0+）。
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>客户端</th>
+            <th>Setup ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {clients.map(([name, id]) => (
+            <tr>
+              <td>{name}</td>
+              <td><code>{id}</code></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <section id="agent" class="space-y-4">
+    <h2>3. 连接 REA</h2>
+    <p>将以下提示词复制发送给你的编程助手：</p>
+
+    <div data-copy-box class="border border-line-2 bg-paper-2">
+      <div class="flex items-center justify-between border-b border-line px-4 py-2">
+        <span class="label text-rust-2">你的编程助手</span>
+        <button
+          type="button"
+          data-copy-btn
+          class="cursor-pointer border border-line-2 px-2.5 py-0.5 font-mono text-[11px] text-ink transition-colors hover:border-rust hover:text-rust-2"
+        >
+          复制
+        </button>
+      </div>
+      <p data-copy-text class="p-4 font-mono text-[13.5px] leading-[1.7] text-ink">
+        使用 npx rea-agents@latest setup 安装 REA 并连接到当前编程助手。先向我展示安装计划等待批准，然后再验证安装结果。
+      </p>
+    </div>
+
+    <details>
+      <summary>或者自己从终端运行 setup</summary>
+      <pre data-label="终端"><code>npx rea-agents@latest setup</code></pre>
+      <p class="text-[14px]">指定单个客户端时加上它的 Setup ID：</p>
+      <pre data-label="终端"><code>npx rea-agents@latest setup --client codex</code></pre>
+      <p class="text-[14px]">
+        若 npm 询问是否下载包，输入 <code>y</code> 回车。在客户端列表中用方向键移动、空格选中、回车继续。首次练习可跳过可选的 Hopper 安装，完成后重启客户端。
+      </p>
+    </details>
+
+    <details>
+      <summary>如何彻底重启客户端？</summary>
+      <p class="text-[14.5px]">
+        <strong>桌面应用</strong>（Claude Desktop、Cursor、Windsurf、VS Code）：完全退出应用再重新打开，仅关闭窗口不够。macOS 按 <code>⌘ Q</code>；Windows 注意从系统托盘图标退出。
+      </p>
+      <p class="text-[14.5px]">
+        <strong>终端助手</strong>（Claude Code、Codex、Gemini CLI）：退出当前会话并重新启动。
+      </p>
+    </details>
+
+    <h3 id="check-connection">验证连接</h3>
+    <pre data-label="终端"><code>npx -y rea-agents@latest doctor --client codex --json</code></pre>
+    <p>将 <code>codex</code> 替换为你的客户端 Setup ID，检查通过会返回 <code>"healthy": true</code>。然后向助手提问：</p>
+    <blockquote>检查 REA 是否已连接，并展示你可以使用哪些 REA 工具。</blockquote>
+  </section>
+
+  <section id="first-investigation" class="space-y-4">
+    <h2>4. 尝试你的第一次调查</h2>
+    <p>
+      官方示例是一个包含 6 个文件的 Electron 应用，带有一个 <strong>Export notes（导出笔记）</strong> 按钮。你的编程助手无需安装或启动 Electron 就能静态分析其代码。
+    </p>
+
+    <div data-copy-box class="border border-line-2 bg-paper-2">
+      <div class="flex items-center justify-between border-b border-line px-4 py-2">
+        <span class="label text-rust-2">你的编程助手 · 首次调查提示词</span>
+        <button
+          type="button"
+          data-copy-btn
+          class="cursor-pointer border border-line-2 px-2.5 py-0.5 font-mono text-[11px] text-ink transition-colors hover:border-rust hover:text-rust-2"
+        >
+          复制
+        </button>
+      </div>
+      <p data-copy-text class="p-4 font-mono text-[13.5px] leading-[1.7] text-ink">
+        下载 https://rea.tools/examples/notes-example.zip 到一个新的 example 文件夹并解压。使用 REA 找出点击 Export notes 时会发生什么：说明 notes.csv 写入到哪里、包含哪些字段，并给出相关文件与行号。
+      </p>
+    </div>
+
+    <p>你会得到类似下面这样附带文件和行号引用的简明结论：</p>
+    <blockquote>
+      按钮发送了一条 <code>notes:export</code> 消息。主进程将笔记格式化为 CSV，并将 <code>notes.csv</code> 写入用户的 Downloads 文件夹，包含 <code>id</code> 和 <code>title</code> 两列。
+    </blockquote>
+
+    <details>
+      <summary>手动下载示例，或分析你自己的应用</summary>
+      <p class="text-[14.5px]">
+        如果助手无法联网下载，请手动 <a href="https://rea.tools/examples/notes-example.zip" target="_blank" rel="noopener noreferrer">下载示例 ZIP</a> 并解压，将 <code>notes-example</code> 文件夹的绝对路径交给它：
+      </p>
+      <blockquote>
+        使用 REA 检查位于 <code>/absolute/path/to/app</code> 的应用。找出它如何导出数据，并展示相关文件与行号。
+      </blockquote>
+    </details>
+
+    <details>
+      <summary>如何获取文件夹的完整路径？</summary>
+      <ul class="space-y-1.5 text-[14.5px]">
+        <li><strong>Windows：</strong>在文件资源管理器中右键点击，选择<em>「复制文件地址」</em>（Windows 10 按住 Shift 右键）。</li>
+        <li><strong>macOS：</strong>在访达中右键点击，按住 Option 键并选择<em>「将“…”拷贝为路径名称」</em>。</li>
+        <li><strong>通用方法：</strong>把文件夹拖进终端窗口即可显示完整路径；含空格的路径请加引号。</li>
+      </ul>
+    </details>
+  </section>
+
+  <section id="native" class="space-y-4">
+    <h2>分析其他类型的软件</h2>
+    <p>按目标类型展开对应的配置说明。提供方（Provider）是 REA 在本机调用的分析工具。</p>
+
+    <details>
+      <summary>原生可执行文件与库 · Hopper、Ghidra 或 IDA</summary>
+      <table>
+        <thead>
+          <tr>
+            <th>提供方</th>
+            <th>Windows</th>
+            <th>macOS</th>
+            <th>Linux</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hopper</strong></td>
+            <td>不可用</td>
+            <td>macOS 12+</td>
+            <td>受支持发行版的 x86_64 安装器</td>
+          </tr>
+          <tr>
+            <td><strong>Ghidra</strong></td>
+            <td>x64 · 实验性</td>
+            <td>x64 / arm64</td>
+            <td>x64 / arm64</td>
+          </tr>
+          <tr>
+            <td><strong>IDA</strong></td>
+            <td>已验证配置</td>
+            <td>已验证无头配置</td>
+            <td>见提供方指南</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <details>
+        <summary>Hopper · 由 setup 自动检测或安装</summary>
+        <p class="text-[14px]">
+          在 macOS 或 Linux x86_64（Ubuntu 24.04+、Fedora 41+、Nobara 44+、Arch、CachyOS、Omarchy）上运行 <code>setup</code> 并选择 Hopper。macOS 首次启动需选择演示模式或激活许可；Linux arm64 请改用 Ghidra。
+        </p>
+        <pre data-label="终端"><code>npx -y rea-agents@latest doctor --provider hopper --json</code></pre>
+      </details>
+
+      <details>
+        <summary>Ghidra · 安装免费分析工具与 JDK 25+</summary>
+        <ol class="text-[14px]">
+          <li>安装 64 位 <a href="https://adoptium.net/temurin/releases/?version=25" target="_blank" rel="noopener noreferrer">JDK 25+</a>（含 <code>javac</code>）。</li>
+          <li>下载 <a href="https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.2_build" target="_blank" rel="noopener noreferrer">Ghidra 12.2</a> 发布包（非 Source code）并解压。</li>
+          <li>将含 <code>ghidraRun</code> 的目录设为 <code>GHIDRA_INSTALL_DIR</code>。</li>
+        </ol>
+        <pre data-label="Windows PowerShell"><code>$env:GHIDRA_INSTALL_DIR = "C:/tools/ghidra_12.2_PUBLIC"
+$env:JAVA_HOME = "C:/tools/jdk-25"
+npx -y rea-agents@latest doctor --provider ghidra --json
+npx rea-agents@latest setup</code></pre>
+        <pre data-label="macOS / Linux"><code>export GHIDRA_INSTALL_DIR="/absolute/path/to/ghidra_12.2_PUBLIC"
+export JAVA_HOME="/absolute/path/to/jdk-25"
+npx -y rea-agents@latest doctor --provider ghidra --json
+npx rea-agents@latest setup</code></pre>
+      </details>
+
+      <details>
+        <summary>IDA · 连接已有安装</summary>
+        <p class="text-[14px]">保存上游 MCP 配置文件 <code>ida-mcp.json</code>（Windows 记事本保存时选「所有文件」避免附加 <code>.txt</code>）：</p>
+        <pre data-label="ida-mcp.json"><code>&#123;
+  "command": "idalib-mcp",
+  "args": ["--stdio", "--max-workers", "1"],
+  "mode": "headless"
+&#125;</code></pre>
+        <pre data-label="Windows PowerShell"><code>$env:REA_IDA_MCP_CONFIG = "C:/analysis/ida-mcp.json"
+$env:REA_ANALYSIS_PROVIDER = "ida"
+npx -y rea-agents@latest doctor --provider ida --json
+npx rea-agents@latest setup</code></pre>
+        <pre data-label="macOS / Linux"><code>export REA_IDA_MCP_CONFIG="/absolute/path/to/ida-mcp.json"
+export REA_ANALYSIS_PROVIDER="ida"
+npx -y rea-agents@latest doctor --provider ida --json
+npx rea-agents@latest setup</code></pre>
+      </details>
+    </details>
+
+    <details>
+      <summary>网站、Android、.NET、固件与其他 16 类目标</summary>
+      <table>
+        <thead>
+          <tr>
+            <th>目标类型</th>
+            <th>所需工具</th>
+            <th>指南</th>
+          </tr>
+        </thead>
+        <tbody>
+          {otherTargets.map(([target, tools, label, href, ext]) => (
+            <tr>
+              <td>{target}</td>
+              <td>{tools}</td>
+              <td>
+                <a
+                  href={href}
+                  target={ext ? "_blank" : undefined}
+                  rel={ext ? "noopener noreferrer" : undefined}
+                >
+                  {label} {ext ? "↗" : "→"}
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <section id="cli" class="space-y-4">
+    <h2>在终端中使用 REA</h2>
+    <details>
+      <summary>CLI 命令、全局安装与 curl 脚本</summary>
+      <pre data-label="静态应用分析"><code>npx -y rea-agents@latest analyze-javascript-application "/absolute/path/to/app" --json</code></pre>
+      <details>
+        <summary>在哪里找到 Electron 应用的 app.asar？</summary>
+        <ul class="text-[14px]">
+          <li><strong>Windows：</strong><code>C:\Users\&lt;you&gt;\AppData\Local\Programs\&lt;App&gt;\resources\app.asar</code></li>
+          <li><strong>macOS：</strong><code>/Applications/&lt;App&gt;.app/Contents/Resources/app.asar</code>（右键选择「显示包内容」）</li>
+          <li><strong>Linux：</strong>通常位于 <code>/opt/&lt;App&gt;/resources/app.asar</code></li>
+        </ul>
+      </details>
+      <pre data-label="全局安装 CLI"><code>npm install --global rea-agents</code></pre>
+      <pre data-label="查询原生函数（需已配置 Ghidra）"><code>npx -y rea-agents@latest function "/absolute/path/to/program" main --provider ghidra --json</code></pre>
+      <pre data-label="macOS / Linux · curl 安装"><code>curl -fsSL https://raw.githubusercontent.com/morluto/rea/main/install.sh | bash</code></pre>
+    </details>
+  </section>
+
+  <section id="help" class="space-y-4">
+    <h2>获取帮助</h2>
+    <details>
+      <summary>如果编程助手看不到 REA</summary>
+      <p class="text-[14.5px]">
+        安装后请彻底重启客户端，并使用第 3 步的 <code>doctor</code> 命令检查连接；在编辑器客户端中确认已在 MCP 设置里启用 REA 并允许其工具调用。
+      </p>
+    </details>
+    <details>
+      <summary>如果分析提供方报错</summary>
+      <pre data-label="检查单个提供方"><code>npx -y rea-agents@latest doctor --provider ghidra --json</code></pre>
+      <p class="text-[14.5px]">报告会指出具体失败项与下一步修复建议。</p>
+    </details>
+    <details>
+      <summary>Windows、WSL 与包含空格的路径</summary>
+      <p class="text-[14.5px]">
+        Windows 客户端请在 PowerShell 中操作；若助手运行在 WSL 内，请在 WSL 中安装 Node.js 与 REA 并使用 Linux 路径。含空格路径请加引号。
+      </p>
+      <pre data-label="Windows PowerShell"><code>npx.cmd rea-agents@latest setup</code></pre>
+    </details>
+    <details>
+      <summary>更新或卸载 REA</summary>
+      <pre data-label="更新智能体配置"><code>npx rea-agents@latest setup</code></pre>
+      <p class="text-[14.5px]">
+        全局安装的 CLI 使用 <code>rea update</code> 更新；移除配置与 skill 使用 <code>npx rea-agents@latest uninstall</code>。
+      </p>
+    </details>
+  </section>
+</GuideLayout>

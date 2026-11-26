@@ -1,0 +1,417 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CtaPanel from "./CtaPanel.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  route?: string[];
+  prev?: { label: string; href: string };
+  next?: { label: string; href: string };
+  upstreamUrl: string;
+}
+
+const { title, description, eyebrow, heading, lead, route, prev, next, upstreamUrl } = Astro.props;
+const currentPath = Astro.url.pathname.replace(/\/$/, "");
+
+const allGuides = [
+  { label: "设置 REA", eyebrow: "第一次调查", href: "/guides/get-started" },
+  { label: "原生二进制分析", eyebrow: "DX-Ball", href: "/guides/native" },
+  { label: "JavaScript & Electron", eyebrow: "CSV 导出", href: "/guides/javascript" },
+  { label: "浏览器观察", eyebrow: "网络与脚本", href: "/guides/browser" },
+  { label: "构建 RL 环境", eyebrow: "AgentEnv", href: "/guides/rl-environments" },
+];
+---
+
+<Layout title={`${title} · REA`} description={description}>
+  <section class="border-b border-line bg-paper">
+    <div class="shell py-14 sm:py-20">
+      <nav aria-label="面包屑导航" class="font-mono text-[12px] tracking-[0.06em] text-muted">
+        <a href="/" class="transition-colors hover:text-ink">首页</a>
+        <span class="mx-2 text-line-2">/</span>
+        <a href="/guides" class="transition-colors hover:text-ink">指南</a>
+        <span class="mx-2 text-line-2">/</span>
+        <span class="text-ink-2">{eyebrow}</span>
+      </nav>
+
+      <p class="label mt-7 text-rust-2">{eyebrow}</p>
+      <h1 class="display mt-4 max-w-[26ch] text-[clamp(2rem,4.4vw,3.3rem)] text-ink">
+        {heading}
+      </h1>
+      <p class="mt-6 max-w-[58ch] text-[16.5px] leading-[1.85] text-ink-2">
+        {lead}
+      </p>
+
+      {
+        route && (
+          <div
+            class="mt-8 flex flex-wrap items-center gap-y-2 font-mono text-[12px] tracking-[0.06em] text-ink"
+            aria-label="分析路径"
+          >
+            {route.map((step, idx) => (
+              <>
+                <span class="border border-line-2 bg-paper-2 px-3 py-1.5">{step}</span>
+                {idx < route.length - 1 && (
+                  <span class="px-2.5 text-rust" aria-hidden="true">
+                    →
+                  </span>
+                )}
+              </>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <article class="border-b border-line bg-paper">
+    <div class="shell py-14 sm:py-20">
+      <div class="grid gap-12 lg:grid-cols-[15.5rem_minmax(0,1fr)] lg:gap-16">
+        <!-- Left sticky navigation -->
+        <aside class="lg:sticky lg:top-24 lg:self-start" aria-label="指南导航">
+          <div class="space-y-8 border-b border-line pb-8 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
+            <div>
+              <p class="label text-muted">本页目录</p>
+              <nav id="guide-toc" aria-label="本页目录" class="mt-3">
+                <ul class="space-y-1.5 text-[13.5px]"></ul>
+              </nav>
+            </div>
+
+            <div class="border-t border-line pt-6">
+              <p class="label text-muted">全部指南</p>
+              <ul class="mt-3 space-y-1">
+                {
+                  allGuides.map((g) => {
+                    const active = currentPath === g.href;
+                    return (
+                      <li>
+                        <a
+                          href={g.href}
+                          aria-current={active ? "page" : undefined}
+                          class={`block border-l-2 py-1.5 pl-3 text-[13.5px] transition-colors ${
+                            active
+                              ? "border-rust font-medium text-ink"
+                              : "border-transparent text-muted hover:border-line-2 hover:text-ink"
+                          }`}
+                        >
+                          {g.label}
+                        </a>
+                      </li>
+                    );
+                  })
+                }
+              </ul>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main content -->
+        <div class="min-w-0">
+          <div class="guide-prose max-w-[48rem] space-y-12 text-[15.5px] leading-[1.85] text-ink-2">
+            <slot />
+          </div>
+
+          <div class="mt-16 max-w-[48rem] border-t border-line pt-8">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                {
+                  prev ? (
+                    <a
+                      href={prev.href}
+                      class="link-underline inline-block font-mono text-[12.5px] tracking-[0.06em] text-ink"
+                    >
+                      ← {prev.label}
+                    </a>
+                  ) : (
+                    <a
+                      href="/guides"
+                      class="link-underline inline-block font-mono text-[12.5px] tracking-[0.06em] text-muted"
+                    >
+                      ← 返回指南列表
+                    </a>
+                  )
+                }
+              </div>
+              <div class="flex flex-wrap items-center gap-6">
+                <a
+                  href={upstreamUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-mono text-[11.5px] tracking-[0.06em] text-muted transition-colors hover:text-ink"
+                >
+                  上游原文 ↗
+                </a>
+                {
+                  next && (
+                    <a
+                      href={next.href}
+                      class="link-underline inline-block font-mono text-[12.5px] tracking-[0.06em] text-ink"
+                    >
+                      {next.label} →
+                    </a>
+                  )
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <CtaPanel />
+</Layout>
+
+<script>
+  // Build left-hand table of contents from h2 headings with scroll spy
+  const tocList = document.querySelector<HTMLUListElement>("#guide-toc ul");
+  const headings = Array.from(document.querySelectorAll<HTMLHeadingElement>(".guide-prose h2"));
+  if (tocList && headings.length > 0) {
+    const links: HTMLAnchorElement[] = [];
+    headings.forEach((h, i) => {
+      const section = h.closest("section");
+      const id = h.id || section?.id || `section-${i + 1}`;
+      if (!h.id && !section?.id) h.id = id;
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = `#${id}`;
+      a.textContent = h.textContent?.trim() ?? "";
+      a.className =
+        "block border-l-2 border-transparent py-1 pl-3 text-muted transition-colors hover:border-line-2 hover:text-ink";
+      li.appendChild(a);
+      tocList.appendChild(li);
+      links.push(a);
+    });
+
+    const setActive = (idx: number) => {
+      links.forEach((a, i) => {
+        a.classList.toggle("border-rust", i === idx);
+        a.classList.toggle("text-ink", i === idx);
+        a.classList.toggle("font-medium", i === idx);
+        a.classList.toggle("border-transparent", i !== idx);
+        a.classList.toggle("text-muted", i !== idx);
+      });
+    };
+    setActive(0);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const idx = headings.indexOf(entry.target as HTMLHeadingElement);
+            if (idx >= 0) setActive(idx);
+          }
+        }
+      },
+      { rootMargin: "-15% 0px -70% 0px" }
+    );
+    headings.forEach((h) => observer.observe(h));
+  }
+
+  document.querySelectorAll<HTMLElement>(".guide-prose pre, .guide-prose [data-copy-box]").forEach((box) => {
+    if (box.dataset.copyWired) return;
+    box.dataset.copyWired = "1";
+
+    const isPre = box.tagName === "PRE";
+    const wrapper = isPre ? document.createElement("div") : box;
+    if (isPre) {
+      wrapper.className = "guide-code-wrap";
+      const label = box.dataset.label || "";
+      const bar = document.createElement("div");
+      bar.className = "guide-code-bar";
+      bar.innerHTML = `<span>${label}</span>`;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "guide-copy-btn";
+      btn.textContent = "复制";
+      btn.addEventListener("click", async () => {
+        const text = box.querySelector("code")?.textContent ?? box.textContent ?? "";
+        try {
+          await navigator.clipboard.writeText(text.trim());
+          btn.textContent = "已复制";
+          setTimeout(() => (btn.textContent = "复制"), 1800);
+        } catch {
+          btn.textContent = "复制失败";
+          setTimeout(() => (btn.textContent = "复制"), 1800);
+        }
+      });
+      bar.appendChild(btn);
+      box.parentNode?.insertBefore(wrapper, box);
+      wrapper.appendChild(bar);
+      wrapper.appendChild(box);
+    } else {
+      const btn = box.querySelector<HTMLButtonElement>("[data-copy-btn]");
+      const target = box.querySelector<HTMLElement>("[data-copy-text]");
+      if (btn && target) {
+        btn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText((target.textContent ?? "").trim());
+            btn.textContent = "已复制";
+            setTimeout(() => (btn.textContent = "复制"), 1800);
+          } catch {
+            btn.textContent = "复制失败";
+            setTimeout(() => (btn.textContent = "复制"), 1800);
+          }
+        });
+      }
+    }
+  });
+</script>
+
+<style is:global>
+  .guide-prose h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 2.6vw, 1.9rem);
+    line-height: 1.3;
+    color: var(--color-ink);
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-line);
+    padding-top: 2rem;
+  }
+  .guide-prose > section:first-child h2 {
+    border-top: none;
+    padding-top: 0;
+  }
+  .guide-prose h3 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    line-height: 1.4;
+    color: var(--color-ink);
+    margin-top: 1.5rem;
+  }
+  .guide-prose pre {
+    overflow-x: auto;
+    background: var(--color-panel);
+    color: var(--color-paper);
+    padding: 1rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0;
+  }
+  .guide-code-wrap {
+    border: 1px solid var(--color-line-2);
+    background: var(--color-panel);
+  }
+  .guide-code-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--color-panel-line);
+    background: var(--color-panel-2);
+    padding: 0.45rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--color-panel-mute);
+  }
+  .guide-copy-btn {
+    cursor: pointer;
+    border: 1px solid var(--color-panel-line);
+    background: transparent;
+    padding: 0.2rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-paper);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .guide-copy-btn:hover {
+    border-color: var(--color-rust);
+    color: var(--color-rust-3);
+  }
+  .guide-prose details {
+    border: 1px solid var(--color-line);
+    background: var(--color-paper-2);
+    padding: 0.95rem 1.25rem;
+  }
+  .guide-prose details + details {
+    margin-top: 0.75rem;
+  }
+  .guide-prose details > summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-ink);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .guide-prose details > summary::-webkit-details-marker {
+    display: none;
+  }
+  .guide-prose details > summary::after {
+    content: "+";
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--color-muted);
+    transition: transform 0.2s;
+  }
+  .guide-prose details[open] > summary::after {
+    content: "−";
+    color: var(--color-rust-2);
+  }
+  .guide-prose details > *:not(summary) {
+    margin-top: 0.9rem;
+  }
+  .guide-prose code:not(pre code) {
+    border: 1px solid var(--color-line);
+    background: var(--color-paper-2);
+    padding: 0.1rem 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    color: var(--color-ink);
+  }
+  .guide-prose a {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-line-2);
+    text-underline-offset: 4px;
+    transition: color 0.2s, text-decoration-color 0.2s;
+  }
+  .guide-prose a:hover {
+    color: var(--color-rust-2);
+    text-decoration-color: var(--color-rust-2);
+  }
+  .guide-prose ul,
+  .guide-prose ol {
+    padding-left: 1.25rem;
+  }
+  .guide-prose ul {
+    list-style: disc;
+  }
+  .guide-prose ol {
+    list-style: decimal;
+  }
+  .guide-prose li + li {
+    margin-top: 0.5rem;
+  }
+  .guide-prose blockquote {
+    border-left: 2px solid var(--color-rust);
+    padding-left: 1.15rem;
+    color: var(--color-ink);
+  }
+  .guide-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .guide-prose th,
+  .guide-prose td {
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.75rem 0.75rem 0.75rem 0;
+    text-align: left;
+    vertical-align: top;
+  }
+  .guide-prose th {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+</style>

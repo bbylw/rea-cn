@@ -3,30 +3,67 @@ import Layout from "../layouts/Layout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import CtaPanel from "../components/CtaPanel.astro";
 
-const guides = [
+interface GuideEntry {
+  eyebrow: string;
+  title: string;
+  body: string;
+  route?: string[];
+  linkLabel: string;
+  href: string;
+  external?: boolean;
+  footnote?: {
+    prefix: string;
+    label: string;
+    href: string;
+    suffix: string;
+  };
+}
+
+const guides: GuideEntry[] = [
   {
-    title: "原生分析",
-    body: "用 Hopper、Ghidra 或 IDA 打开原生二进制，拿到伪代码、汇编、符号与调用链。适合需要深入指令层的逆向任务。",
-    tags: ["Hopper", "Ghidra", "IDA"],
-    href: "https://rea.tools/guides/native/",
+    eyebrow: "第一次调查",
+    title: "设置 REA",
+    body: "连接你的编程助手，或在终端中使用 REA。完成 MCP 服务注册与工作流指引安装后，即可开始第一次分析。",
+    linkLabel: "开始使用 REA",
+    href: "/guides/get-started",
   },
   {
-    title: "应用分析",
-    body: "分析已解包的 JavaScript / Electron 应用目录或 ASAR 文件，恢复模块、导入、source map、路由、IPC 与原生扩展关系。",
-    tags: ["Node.js", "ASAR", "IPC"],
-    href: "https://rea.tools/guides/javascript/",
+    eyebrow: "原生二进制",
+    title: "还原声像定位的计算",
+    body: "从 Windows 游戏可执行文件开始。检查指令，跟随调用者，读取数字常量并检查恢复的 C。",
+    route: ["指令", "调用方", "常量", "C 函数"],
+    linkLabel: "原生分析指南",
+    href: "/guides/native",
   },
   {
-    title: "浏览器分析",
-    body: "检查网站的页面结构、脚本与网络观察结果，并按请求获取截图。需要 Chrome 系浏览器。",
-    tags: ["Chrome", "DOM", "Network"],
-    href: "https://rea.tools/guides/browser/",
+    eyebrow: "JavaScript & Electron",
+    title: "追踪 CSV 导出",
+    body: "一个小 Notes 应用把同一个功能分散在渲染进程、预加载脚本和主进程三处。用 REA 把 API、IPC 通道和写文件的代码关联起来。",
+    route: ["按钮", "预加载 API", "IPC", "CSV 文件"],
+    linkLabel: "JavaScript & Electron 指南",
+    href: "/guides/javascript",
+    footnote: {
+      prefix: "对于更大的打包应用，请看",
+      label: "Notion 的剪贴板衔接逻辑",
+      href: "/cases",
+      suffix: "。",
+    },
   },
   {
-    title: "RL 环境",
-    body: "录制 Web 应用会话，将其转为工具和本地数据，再添加任务和奖励检查。导出的环境用 AgentEnv 运行，可用于 RL 训练或智能体评测。",
-    tags: ["AgentEnv", "Docker", "HAR"],
-    href: "https://rea.tools/guides/rl-environments/",
+    eyebrow: "浏览器行为",
+    title: "观察点击",
+    body: "打开一个可以正常运行的 Notes 示例，捕获导出请求，并找到把响应转为下载文件的代码。",
+    route: ["你的点击", "捕获的请求", "导出脚本"],
+    linkLabel: "浏览器观察指南",
+    href: "/guides/browser",
+  },
+  {
+    eyebrow: "RL 环境",
+    title: "为智能体构建环境",
+    body: "录制 Web 应用会话，将其转为工具和本地数据，再添加任务和奖励检查。",
+    route: ["录制", "构建", "运行", "评测"],
+    linkLabel: "构建环境指南",
+    href: "/guides/rl-environments",
   },
 ];
 
@@ -37,20 +74,20 @@ const docs = [
   { label: "MCP 契约", note: "工具结果、会话和引导式调查", href: "https://github.com/morluto/rea/blob/main/docs/reference/mcp-contracts.md" },
   { label: "智能体提示词", note: "引导式调查的提示词设计", href: "https://github.com/morluto/rea/blob/main/docs/getting-started/mcp-prompts.md" },
   { label: "工具目录", note: "构建时生成的工具、提供方与 CLI 命令清单", href: "https://github.com/morluto/rea/blob/main/docs/reference/mcp-contracts.md#generated-catalog" },
-  { label: "路线图", note: "计划中的工作和能力跟踪", href: "https://github.com/morluto/rea/blob/main/docs/development/roadmap.md" },
+  { label: "支持的格式与运行要求", note: "44 类分析目标的返回内容与环境要求", href: "https://github.com/morluto/rea/blob/main/docs/reference/supported-targets.md" },
   { label: "测试指南", note: "贡献代码时的验证流程", href: "https://github.com/morluto/rea/blob/main/docs/development/testing.md" },
 ];
 ---
 
 <Layout
-  title="使用指南 · REA"
-  description="学习如何使用 REA 进行逆向工程分析：原生分析、JavaScript / Electron 分析、浏览器分析与 RL 环境构建四类实操指南。"
+  title="逆向工程指南 · REA"
+  description="通过简短示例学习 REA：设置 REA、还原原生计算、追踪 Electron CSV 导出、观察浏览器请求与构建 RL 环境。"
 >
   <PageHeader
     eyebrow="使用指南"
-    title="实操指南：四类玩法，一套流程"
-    lead="先从目标类型入手。每份指南都说明前提条件、执行方式、返回的结果契约，以及运行时捕获对系统的影响范围。"
-    meta={["指南数量|4 类", "结果契约|证据 + 限制", "更新方式|rea update"]}
+    title="REA 分析指南"
+    lead="分析原生函数、Electron 导出流程、浏览器请求，或为智能体构建 RL 环境。每个指南都包含提示词、代码和结果。"
+    meta={["指南数量|5 篇", "包含内容|提示词 · 代码 · 结果", "更新方式|rea update"]}
   />
 
   <section class="border-b border-line bg-paper">
@@ -58,37 +95,65 @@ const docs = [
       <ul class="border-t border-line">
         {
           guides.map((g, i) => (
-            <li data-reveal style={`--reveal-delay:${i * 90}ms`} class="border-b border-line">
-              <a
-                href={g.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="row-lift group block py-8"
-              >
-                <div class="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-10">
-                  <div>
-                    <h2 class="text-[24px] text-ink transition-colors duration-300 group-hover:text-rust-2 sm:text-[27px]">
-                      {g.title}
-                    </h2>
-                    <p class="mt-3 max-w-[56ch] text-[15.5px] leading-[1.8] text-ink-2">
-                      {g.body}
-                    </p>
-                    <ul class="mt-5 flex flex-wrap gap-2">
-                      {g.tags.map((t) => (
-                        <li class="border border-line px-2.5 py-1 font-mono text-[10.5px] tracking-[0.12em] text-muted">
-                          {t}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <span
-                    class="font-mono text-[12px] tracking-[0.1em] text-muted transition-transform duration-500 group-hover:translate-x-1 sm:self-center"
-                    aria-hidden="true"
-                  >
-                    打开 ↗
-                  </span>
+            <li
+              data-reveal
+              style={`--reveal-delay:${i * 80}ms`}
+              class="row-lift border-b border-line py-9 sm:py-11"
+            >
+              <div class="grid gap-6 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] lg:gap-12">
+                <div>
+                  <p class="label text-rust-2">{g.eyebrow}</p>
                 </div>
-              </a>
+
+                <div>
+                  <h2 class="text-[24px] leading-snug text-ink sm:text-[28px]">{g.title}</h2>
+                  <p class="mt-3.5 max-w-[58ch] text-[15.5px] leading-[1.85] text-ink-2">
+                    {g.body}
+                  </p>
+
+                  {g.route && (
+                    <div
+                      class="mt-5 flex flex-wrap items-center gap-y-2 font-mono text-[12px] tracking-[0.06em] text-ink"
+                      aria-label="分析路径"
+                    >
+                      {g.route.map((step, idx) => (
+                        <>
+                          <span class="border border-line-2 bg-paper-2 px-2.5 py-1">{step}</span>
+                          {idx < g.route!.length - 1 && (
+                            <span class="px-2 text-rust" aria-hidden="true">→</span>
+                          )}
+                        </>
+                      ))}
+                    </div>
+                  )}
+
+                  <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
+                    <a
+                      href={g.href}
+                      target={g.external ? "_blank" : undefined}
+                      rel={g.external ? "noopener noreferrer" : undefined}
+                      class="link-underline -mx-2 inline-block px-2 py-1.5 font-mono text-[12.5px] tracking-[0.08em] text-ink"
+                    >
+                      {g.linkLabel} {g.external ? "↗" : "→"}
+                    </a>
+                  </div>
+
+                  {g.footnote && (
+                    <p class="mt-3 text-[13.5px] leading-[1.7] text-muted">
+                      {g.footnote.prefix}
+                      <a
+                        href={g.footnote.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="underline decoration-line-2 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink"
+                      >
+                        {g.footnote.label}
+                      </a>
+                      {g.footnote.suffix}
+                    </p>
+                  )}
+                </div>
+              </div>
             </li>
           ))
         }

@@ -1,0 +1,143 @@
+---
+import GuideLayout from "../../components/GuideLayout.astro";
+---
+
+<GuideLayout
+  title="构建 RL 环境指南"
+  description="把录制的 Web 应用会话转换为可运行的 AgentEnv 环境，用于训练和评测 AI 智能体。"
+  eyebrow="RL 环境"
+  heading="为智能体构建 RL 环境"
+  lead="把录制的 Web 应用会话转换为可运行的本地环境，用于训练和测试 AI 智能体。"
+  route={["录制", "构建", "运行", "评测"]}
+  prev={{ label: "浏览器观察指南", href: "/guides/browser" }}
+  upstreamUrl="https://rea.tools/zh-CN/guides/rl-environments/"
+>
+  <section class="space-y-4">
+    <h2>REA 会为你构建什么</h2>
+    <p>
+      智能体无需运行原应用，即可练习查找问题、创建文件夹或编辑记录。REA 会生成供智能体调用的工具、工具依赖的本地状态数据，以及用于检查环境能否正常启动和响应的基础测试。
+    </p>
+    <div class="border border-line-2 bg-paper-2 p-5">
+      <p class="label text-ink">三步完成环境构建</p>
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        <div class="border border-line bg-paper p-4">
+          <p class="font-mono text-[11px] tracking-[0.12em] text-rust-2">01 · 录制</p>
+          <p class="mt-1.5 font-medium text-ink">使用测试应用</p>
+          <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+            捕获请求、响应以及变更产生的结果。
+          </p>
+        </div>
+        <div class="border border-line bg-paper p-4">
+          <p class="font-mono text-[11px] tracking-[0.12em] text-rust-2">02 · 用 REA 构建</p>
+          <p class="mt-1.5 font-medium text-ink">创建工具和本地状态</p>
+          <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+            连同录制数据和测试一起导出可运行的 AgentEnv 文件夹。
+          </p>
+        </div>
+        <div class="border border-line bg-paper p-4">
+          <p class="font-mono text-[11px] tracking-[0.12em] text-rust-2">03 · 用 AgentEnv 运行</p>
+          <p class="mt-1.5 font-medium text-ink">把环境交给智能体</p>
+          <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+            添加任务目标和奖励检查，用于评测或强化学习训练。
+          </p>
+        </div>
+      </div>
+    </div>
+    <p>
+      <strong>证据边界：</strong>录制内容决定了环境支持哪些操作。只有当录制记录确认了某项修改的效果时，该修改操作才会被纳入环境。
+    </p>
+  </section>
+
+  <section class="space-y-4">
+    <h2>开始之前</h2>
+    <ul>
+      <li>完成 <a href="/guides/get-started">REA 与编程助手的配置</a>。</li>
+      <li>准备一个基于 Chromium 的浏览器，以及正在运行的测试 Web 应用实例（允许智能体创建、编辑和删除测试数据）。</li>
+      <li>
+        安装 <a href="https://github.com/scaleapi/agentenv-framework#install" target="_blank" rel="noopener noreferrer">AgentEnv 框架</a> 并启动 Docker（REA 兼容性检查基于 Python 3.12 与 AgentEnv <code>0.9.1334</code>）。
+      </li>
+    </ul>
+  </section>
+
+  <section class="space-y-4">
+    <h2>用编程助手录制并构建</h2>
+    <p>告诉助手要覆盖哪个应用以及需要支持的操作：</p>
+    <div data-copy-box class="border border-line-2 bg-paper-2">
+      <div class="flex items-center justify-between border-b border-line px-4 py-2">
+        <span class="label text-rust-2">你的编程助手 · 示例提示词</span>
+        <button
+          type="button"
+          data-copy-btn
+          class="cursor-pointer border border-line-2 px-2.5 py-0.5 font-mono text-[11px] text-ink transition-colors hover:border-rust hover:text-rust-2"
+        >
+          复制
+        </button>
+      </div>
+      <p data-copy-text class="p-4 font-mono text-[13.5px] leading-[1.7] text-ink">
+        使用 REA 根据我位于 http://127.0.0.1:3000 的测试 Web 应用构建一个 AgentEnv 环境。需要覆盖列出、创建、重命名和删除文件夹操作。你可以创建并删除测试文件夹，不要修改现有数据。使用 APP_PASSWORD 中的密码以 admin 身份登录。通过位于 /absolute/path/to/chromium 的浏览器进行录制，并导出到尚不存在的 /absolute/path/to/my-env 目录。检查哪些操作受支持，并报告所有缺口。
+      </p>
+    </div>
+    <p class="text-[14px] text-muted">
+      提示：请通过启动 REA MCP 服务器的环境变量传入 <code>APP_PASSWORD</code>，避免将密码直接写进提示词。
+    </p>
+  </section>
+
+  <section class="space-y-4">
+    <h2>或直接使用已保存的 HAR 文件</h2>
+    <p>从浏览器网络面板导出包含 API 响应体的 HAR 文件，再执行构建命令：</p>
+    <pre data-label="构建环境 · CLI"><code>npx -y rea-agents@latest environment-build ./session.har ./my-env --name my-env --json</code></pre>
+    <p>
+      构建过程仅读取本地数据并写入目标目录，不会连接原应用。添加 <code>--dry-run</code> 可在不写入文件的情况下预览覆盖率报告——报告会列出读取操作、受支持的修改操作，以及未纳入操作的原因和补录建议。
+    </p>
+  </section>
+
+  <section class="space-y-4">
+    <h2>运行环境并添加任务</h2>
+    <pre data-label="运行环境测试"><code>agent-env run ./my-env</code></pre>
+    <p>
+      首次运行会构建容器镜像，内置的冒烟测试会校验工具数量并调用读取工具检查响应状态。测试通过后，就可以让编程助手帮你编写具体的 AgentEnv 任务与评分验证器：
+    </p>
+    <div data-copy-box class="border border-line-2 bg-paper-2">
+      <div class="flex items-center justify-between border-b border-line px-4 py-2">
+        <span class="label text-rust-2">你的编程助手 · 添加任务示例</span>
+        <button
+          type="button"
+          data-copy-btn
+          class="cursor-pointer border border-line-2 px-2.5 py-0.5 font-mono text-[11px] text-ink transition-colors hover:border-rust hover:text-rust-2"
+        >
+          复制
+        </button>
+      </div>
+      <p data-copy-text class="p-4 font-mono text-[13.5px] leading-[1.7] text-ink">
+        使用这个导出的环境添加一个 AgentEnv 任务，要求智能体创建名为 Practice 的文件夹。检查环境状态以确认该名称的文件夹已存在，并据此对结果评分。每次运行前重置环境。遵循 AgentEnv 的任务与验证器格式。
+      </p>
+    </div>
+  </section>
+
+  <section class="space-y-4">
+    <h2>检查可用功能与隐私复核</h2>
+    <p>
+      要让修改操作得到支持，不仅要录制操作本身，还要录制操作结果：先读取条目，再修改条目，然后在下一次修改前重新读取该条目及其所在列表，并使用不同取值重复这一过程。对于删除操作，则需要同时录制条目不存在的响应以及更新后的列表。
+    </p>
+    <p>
+      启动测试通过、智能体完成任务以及与原应用行为一致，这三者是相互独立的检查。要验证后者，请将从相同初始数据出发、另行录制的原应用调用记录传给 <code>environment-compare</code>。
+    </p>
+    <p>
+      <strong>分享前注意：</strong>请检查导出目录中保留的响应体和本地路径。自定义请求头、查询参数值和响应体令牌仍可能保留在里面——凭据名称警告只会标记需要复核的位置，不会自动删除这些值。
+    </p>
+    <p>
+      如需了解覆盖率报告和比对命令，请参阅<a href="https://github.com/morluto/rea/blob/main/docs/agent-environments-quickstart.md" target="_blank" rel="noopener noreferrer">完整录制与验证指南</a>；如需了解直接 MCP 服务、状态控制和限制说明，请参阅<a href="https://github.com/morluto/rea/blob/main/docs/agent-environments.md" target="_blank" rel="noopener noreferrer">环境参考文档</a>。
+    </p>
+  </section>
+
+  <section class="space-y-4">
+    <h2>构建 Linux 桌面应用环境</h2>
+    <p>
+      对于 Linux 桌面应用，先描述你希望智能体练习的任务（例如在 Gnote 中把橄榄油添加到购物清单）。智能体会在本地构建机上安装应用、编写任务并导出环境，然后在一台全新环境中通过截图、鼠标和键盘验证任务。
+    </p>
+    <p>
+      构建机需运行 amd64 或 arm64 版 Linux，并安装 Docker 与指定版本的 AgentEnv。详情请参阅上游
+      <a href="https://github.com/morluto/rea/blob/main/docs/desktop-build-computer.md#set-up-a-build-host" target="_blank" rel="noopener noreferrer">桌面环境构建机设置指南</a>。
+    </p>
+  </section>
+</GuideLayout>

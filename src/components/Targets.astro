@@ -30,10 +30,10 @@ const notes = [
       <TargetTabs client:visible />
     </div>
 
-    <dl class="mt-16 grid gap-px border-t border-line bg-line sm:grid-cols-3">
+    <dl class="mt-16 grid divide-y divide-line border-t border-line sm:grid-cols-3 sm:divide-x sm:divide-y-0">
       {
         notes.map((n) => (
-          <div class="bg-paper-2 py-7 pr-8">
+          <div class="py-7 sm:px-8 sm:first:pl-0 sm:last:pr-0">
             <dt class="label">{n.label}</dt>
             <dd class="mt-3 max-w-[38ch] text-[14.5px] leading-[1.8] text-ink-2">{n.body}</dd>
           </div>

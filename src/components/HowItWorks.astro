@@ -29,15 +29,22 @@ const steps = [
       </p>
     </div>
 
-    <ol class="mt-14 grid gap-px border-t border-line bg-line md:grid-cols-3">
+    <ol class="mt-14 grid divide-y divide-line border-t border-line md:grid-cols-3 md:divide-x md:divide-y-0">
       {
         steps.map((s, i) => (
           <li
             data-reveal
             style={`--reveal-delay:${i * 90}ms`}
-            class="group flex h-full flex-col bg-paper pt-7 md:pr-8"
+            class="group flex h-full flex-col bg-paper py-8 md:px-8 md:first:pl-0 md:last:pr-0"
           >
-            <span class="label transition-colors duration-300 group-hover:text-rust-2">{s.meta}</span>
+            <div class="flex items-center justify-between gap-4">
+              <span class="label transition-colors duration-300 group-hover:text-rust-2">
+                {s.meta}
+              </span>
+              <span class="tnum font-mono text-[11px] text-muted" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+            </div>
             <h3 class="mt-4 text-[22px] leading-snug text-ink sm:text-[25px]">{s.title}</h3>
             <p class="mt-4 mb-8 max-w-[40ch] text-[15px] leading-[1.8] text-ink-2">{s.body}</p>
             <span class="mt-auto block h-px w-10 bg-rust" aria-hidden="true"></span>

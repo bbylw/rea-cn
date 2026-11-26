@@ -123,14 +123,14 @@ const allGuides = [
                       href={prev.href}
                       class="link-underline inline-block font-mono text-[12.5px] tracking-[0.06em] text-ink"
                     >
-                      ← {prev.label}
+                      上一篇：{prev.label}
                     </a>
                   ) : (
                     <a
                       href="/guides"
                       class="link-underline inline-block font-mono text-[12.5px] tracking-[0.06em] text-muted"
                     >
-                      ← 返回指南列表
+                      返回指南列表
                     </a>
                   )
                 }
@@ -142,7 +142,7 @@ const allGuides = [
                   rel="noopener noreferrer"
                   class="font-mono text-[11.5px] tracking-[0.06em] text-muted transition-colors hover:text-ink"
                 >
-                  上游原文 ↗
+                  上游原文
                 </a>
                 {
                   next && (
@@ -150,7 +150,7 @@ const allGuides = [
                       href={next.href}
                       class="link-underline inline-block font-mono text-[12.5px] tracking-[0.06em] text-ink"
                     >
-                      {next.label} →
+                      下一篇：{next.label}
                     </a>
                   )
                 }

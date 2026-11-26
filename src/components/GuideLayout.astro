@@ -358,6 +358,22 @@ const allGuides = [
   .guide-prose details > *:not(summary) {
     margin-top: 0.9rem;
   }
+  .guide-prose details::details-content {
+    interpolate-size: allow-keywords;
+    overflow: clip;
+    contain: layout;
+  }
+  .guide-prose details:not([open])::details-content {
+    block-size: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .guide-prose details::details-content {
+      transition: block-size, content-visibility, display;
+      transition-duration: 0.28s;
+      transition-timing-function: ease-in-out;
+      transition-behavior: allow-discrete;
+    }
+  }
   .guide-prose code:not(pre code) {
     border: 1px solid var(--color-line);
     background: var(--color-paper-2);

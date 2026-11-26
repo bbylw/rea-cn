@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
 /* ============================================================
    REA — Evidence Ledger
    Visual language: an analysis report. Hairline rules, tabular
